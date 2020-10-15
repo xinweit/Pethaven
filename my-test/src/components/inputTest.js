@@ -36,7 +36,6 @@ const InputTest = () => {
                 <button className="btn btn-success">Add</button>
             </form>
             </div>
-
          </Fragment>
     );
 };
