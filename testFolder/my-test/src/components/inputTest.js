@@ -3,6 +3,7 @@ import React, { Fragment, useState } from 'react';
 
 const InputTest = () => {
     //change name & only way to change name is setName
+    //using react webhooks
     const [userName, setName] = useState("");
 
     const onSubmitForm = async(e) => {
@@ -26,13 +27,16 @@ const InputTest = () => {
     };
     return (
          <Fragment>
-            <h1>Input into test_table</h1>
-            <form onSubmit={onSubmitForm}>
-                <input type="text" value={userName} 
+            <h1 className="text-center mt-5">Input into test_table</h1>
+            <div>
+                 <form className ="d-flex mt-5" onSubmit={onSubmitForm}>
+                <input type="text" className="form-control" value={userName} 
                 onChange={e=> setName(e.target.value)} 
                 />
-                <button>Add</button>
+                <button className="btn btn-success">Add</button>
             </form>
+            </div>
+
          </Fragment>
     );
 };

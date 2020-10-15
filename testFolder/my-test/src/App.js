@@ -4,11 +4,14 @@ import './App.css';
 
 //components 
 import InputTest from "./components/inputTest.js";
-
+import ListTest from "./components/listTest";
+import EditTest from "./components/editTest";
 function App() {
   return (
     <Fragment>
       <InputTest/>
+      <ListTest/>
+      {/* <EditTest/> */}
     </Fragment>
   );
 }
