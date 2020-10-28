@@ -104,4 +104,34 @@ CREATE TABLE bids_for(
     PRIMARY KEY(advertisement_email, pet_category, start_date, end_date, pet_email, pet_name)
 );
 
-
+CREATE OR REPLACE FUNCTION login(
+  type VARCHAR,
+  input_email VARCHAR,
+  input_password VARCHAR)
+  RETURNS BOOLEAN AS 
+  $t$ BEGIN
+    RETURN CASE
+      WHEN type='pet_owner'
+      THEN EXISTS(SELECT *
+                  FROM pet_owners p
+                  WHERE p.email=input_email
+                  AND p.password=input_password)
+      WHEN type='caretaker'
+      THEN EXISTS(SELECT *
+                  FROM caretakers c
+                  WHERE c.email=input_email
+                  AND (EXISTS(SELECT *
+                              FROM pt_caretakers pt
+                              WHERE pt.email=c.email
+                              AND pt.password=input_password)
+                       OR EXISTS(SELECT *
+                                 FROM ft_caretakers ft
+                                 WHERE ft.email=c.email
+                                 AND ft.password=input_password)))
+      WHEN type='pcs_admin'
+      THEN EXISTS(SELECT *
+            FROM pcs_admins p
+            WHERE p.email=input_email
+            AND p.password=input_password)
+      ELSE 0 END; END; $t$
+  LANGUAGE plpgsql;
