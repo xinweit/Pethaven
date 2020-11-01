@@ -1,19 +1,57 @@
-import React, { Fragment } from "react";
-import { Route, Switch, BrowserRouter } from "react-router-dom";
+import React, { Fragment, useState } from "react";
+import { Route, Switch, BrowserRouter as Router, Redirect } from "react-router-dom";
 import "./App.css";
-import SignInSide from "./components/SignIn";
+import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
+import Home from "./components/Home";
 
 function App() {
+	const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+	const setAuth = (boolean) => {
+		setIsAuthenticated(boolean);
+	};
+
 	return (
-		<BrowserRouter>
-			<Fragment>
+		<Fragment>
+			<Router>
 				<Switch>
-					<Route path="/signin" component={SignInSide} exact={true} />
-					<Route path="/signup" component={SignUp} />
+					<Route
+						exact
+						path="/signin"
+						render={(props) =>
+							!isAuthenticated ? (
+								<SignIn {...props} setAuth={setAuth} />
+							) : (
+								<Redirect to="/home" />
+							)
+						}
+					/>
+					<Route
+						exact
+						path="/signup"
+						render={(props) =>
+							!isAuthenticated ? (
+								<SignUp {...props} setAuth={setAuth} />
+							) : (
+								<Redirect to="/signin" />
+							)
+						}
+					/>
+					<Route
+						exact
+						path="/home"
+						render={(props) =>
+							isAuthenticated ? (
+								<Home {...props} setAuth={setAuth} />
+							) : (
+								<Redirect to="/signin" />
+							)
+						}
+					/>
 				</Switch>
-			</Fragment>
-		</BrowserRouter>
+			</Router>
+		</Fragment>
 	);
 }
 

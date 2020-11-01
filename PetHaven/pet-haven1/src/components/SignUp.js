@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -47,12 +47,48 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function SignUp() {
+export default function SignUp({ setAuth }) {
 	const classes = useStyles();
 
-	const [gender, setGender] = React.useState("");
-	const handleChange = (event) => {
-		setGender(event.target.value);
+	// const [type, setType] = useState("");
+	// const handleChange = (event) => {
+	// 	setType(event.target.value);
+	// };
+
+	const [inputs, setInputs] = useState({
+		email: "",
+		password: "",
+		confirmPassword: "",
+		firstName: "",
+		lastName: "",
+		type: "",
+	});
+
+	const { email, password, confirmPassword, firstName, lastName, type } = inputs;
+
+	const handleChange = (e) => {
+		setInputs({ ...inputs, [e.target.name]: e.target.value });
+	};
+
+	const onSubmitForm = async (e) => {
+		e.preventDefault();
+		try {
+			var fullName = firstName + " " + lastName;
+			const body = { fullName, type, email, password };
+			const response = await fetch("http://localhost:5002/auth/signup", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(body),
+			});
+
+			const parseRes = await response.json();
+
+			localStorage.setItem("token", parseRes.token);
+
+			setAuth(true);
+		} catch (error) {
+			console.error(error.message);
+		}
 	};
 
 	return (
@@ -65,11 +101,10 @@ export default function SignUp() {
 				<Typography component="h1" variant="h5">
 					Sign up
 				</Typography>
-				<form className={classes.form} noValidate>
+				<form className={classes.form} onSubmit={onSubmitForm}>
 					<Grid container spacing={2}>
 						<Grid item xs={12} sm={6}>
 							<TextField
-								autoComplete="fname"
 								name="firstName"
 								variant="outlined"
 								required
@@ -77,6 +112,8 @@ export default function SignUp() {
 								id="firstName"
 								label="First Name"
 								autoFocus
+								value={firstName}
+								onChange={(e) => handleChange(e)}
 							/>
 						</Grid>
 						<Grid item xs={12} sm={6}>
@@ -87,47 +124,10 @@ export default function SignUp() {
 								id="lastName"
 								label="Last Name"
 								name="lastName"
-								autoComplete="lname"
+								value={lastName}
+								onChange={(e) => handleChange(e)}
 							/>
 						</Grid>
-						{/* <Grid item xs={12} sm={8}>
-							<FormControl
-								fullWidth
-								variant="outlined"
-								className={classes.formControl}
-							>
-								<InputLabel required htmlFor="outlined-age-native-simple">
-									Gender
-								</InputLabel>
-								<Select
-									native
-									value={gender}
-									onChange={handleChange}
-									label="Gender"
-									id="gender"
-									inputProps={{
-										name: "gender",
-										id: "outlined-age-native-simple",
-									}}
-								>
-									<option aria-label="None" value="" />
-									<option value={"male"}>Male</option>
-									<option value={"female"}>Female</option>
-								</Select>
-							</FormControl>
-						</Grid>
-						<Grid item xs={12} sm={4}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								name="age"
-								label="Age"
-								type="number"
-								InputProps={{ inputProps: { min: 16, max: 100 } }}
-								id="age"
-							/>
-						</Grid> */}
 						<Grid item xs={12}>
 							<FormControl
 								fullWidth
@@ -139,8 +139,8 @@ export default function SignUp() {
 								</InputLabel>
 								<Select
 									native
-									value={gender}
-									onChange={handleChange}
+									value={type}
+									onChange={(e) => handleChange(e)}
 									label="Type"
 									id="type"
 									inputProps={{
@@ -165,7 +165,8 @@ export default function SignUp() {
 								id="email"
 								label="Email Address"
 								name="email"
-								autoComplete="email"
+								value={email}
+								onChange={(e) => handleChange(e)}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -177,7 +178,8 @@ export default function SignUp() {
 								label="Password"
 								type="password"
 								id="password"
-								autoComplete="current-password"
+								value={password}
+								onChange={(e) => handleChange(e)}
 							/>
 						</Grid>
 						<Grid item xs={12}>
@@ -189,7 +191,8 @@ export default function SignUp() {
 								label="Confirm Password"
 								type="password"
 								id="confirmPassword"
-								autoComplete="confirm-password"
+								value={confirmPassword}
+								onChange={(e) => handleChange(e)}
 							/>
 						</Grid>
 					</Grid>

@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState } from "react";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +12,9 @@ import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
 
 function Copyright() {
 	return (
@@ -57,8 +60,41 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-export default function SignInSide() {
+export default function SignIn({ setAuth }) {
 	const classes = useStyles();
+
+	const [inputs, setInputs] = useState({
+		email: "",
+		password: "",
+		type: "",
+	});
+
+	const { email, password, type } = inputs;
+
+	const handleChange = (e) => {
+		setInputs({ ...inputs, [e.target.name]: e.target.value });
+	};
+
+	const onSubmitForm = async (e) => {
+		e.preventDefault();
+
+		try {
+			const body = { email, password, type };
+			const response = await fetch("http://localhost:5002/auth/signin", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(body),
+			});
+
+			const parseRes = await response.json();
+
+			localStorage.setItem("token", parseRes.token);
+
+			setAuth(true);
+		} catch (error) {
+			console.error(error.message);
+		}
+	};
 
 	return (
 		<Grid container component="main" className={classes.root}>
@@ -72,7 +108,30 @@ export default function SignInSide() {
 					<Typography component="h1" variant="h5">
 						Sign into Pet Haven!
 					</Typography>
-					<form className={classes.form} noValidate>
+					<form className={classes.form} onSubmit={onSubmitForm}>
+						<FormControl fullWidth variant="outlined" className={classes.formControl}>
+							<InputLabel required htmlFor="outlined-age-native-simple">
+								Type
+							</InputLabel>
+							<Select
+								native
+								value={type}
+								onChange={(e) => handleChange(e)}
+								label="Type"
+								id="type"
+								inputProps={{
+									name: "type",
+									id: "outlined-age-native-simple",
+								}}
+							>
+								<option aria-label="None" value="" />
+								<option value={"pet_owner"}>Pet Owner</option>
+								<option value={"pt_caretaker"}>Part Time Caretaker</option>
+								<option value={"ft_caretaker"}>Full Time Caretaker</option>
+								<option value={"pt_user"}>Part Time User</option>
+								<option value={"ft_user"}>Full Time User</option>
+							</Select>
+						</FormControl>
 						<TextField
 							variant="outlined"
 							margin="normal"
@@ -83,6 +142,8 @@ export default function SignInSide() {
 							name="email"
 							autoComplete="email"
 							autoFocus
+							value={email}
+							onChange={(e) => handleChange(e)}
 						/>
 						<TextField
 							variant="outlined"
@@ -94,6 +155,8 @@ export default function SignInSide() {
 							type="password"
 							id="password"
 							autoComplete="current-password"
+							value={password}
+							onChange={(e) => handleChange(e)}
 						/>
 						<FormControlLabel
 							control={<Checkbox value="remember" color="primary" />}
