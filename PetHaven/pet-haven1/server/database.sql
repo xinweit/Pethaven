@@ -1,9 +1,8 @@
--- CREATE DATABASE pethaven;
+CREATE DATABASE pethaven;
 
 CREATE TABLE pet_owners(
     email VARCHAR(255) PRIMARY KEY,
-    password VARCHAR (50),
-    age integer,
+    password VARCHAR (255),
     name VARCHAR(255),
     credit_card VARCHAR(255)
 );
@@ -14,16 +13,14 @@ CREATE TABLE pet_owners(
 
 CREATE TABLE pt_caretakers(
     email VARCHAR(255) PRIMARY KEY,
-    password VARCHAR (50),
-    age integer,
+    password VARCHAR (255),
     name VARCHAR(255), 
     FOREIGN KEY(email) REFERENCES caretakers(email)
 );
 
 CREATE TABLE ft_caretakers(
     email VARCHAR(255) PRIMARY KEY,
-    password VARCHAR (50),
-    age integer,
+    password VARCHAR (255),
     name VARCHAR(255),
     pet_day integer,
     FOREIGN KEY(email) REFERENCES caretakers(email)
@@ -31,9 +28,8 @@ CREATE TABLE ft_caretakers(
 
 CREATE TABLE pcs_admins(
     email VARCHAR(255) PRIMARY KEY,
-    password VARCHAR (50),
-    age integer,
-    name VARCHAR(255) 
+    password VARCHAR (255),
+    name VARCHAR(255)
 );
 
 CREATE TABLE owns_pets(
@@ -135,3 +131,110 @@ CREATE OR REPLACE FUNCTION login(
             AND p.password=input_password)
       ELSE 0 END; END; $t$
   LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION check_email_signup(
+  type VARCHAR,
+  input_email VARCHAR)
+  RETURNS BOOLEAN AS
+  $t$ BEGIN
+    RETURN CASE
+      WHEN type='pet_owner'
+      THEN EXISTS(SELECT *
+                  FROM pet_owners p
+                  WHERE p.email=input_email)
+      WHEN type='pt_caretaker' OR type='ft_caretaker'
+      THEN EXISTS(SELECT *
+                  FROM caretakers c
+                  WHERE c.email=input_email)
+      WHEN type='pt_user' OR type='ft_user'
+      THEN EXISTS(SELECT email
+                    FROM caretakers
+                    WHERE email=input_email
+                    UNION
+                    SELECT email
+                    FROM pet_owners
+                    WHERE email=input_email)
+      WHEN type='pcs_admin'
+      THEN EXISTS(SELECT *
+                  FROM pcs_admins p
+                  WHERE p.email=input_email)
+      ELSE FALSE END; END; $t$
+  LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION check_email_signin(
+  type VARCHAR,
+  input_email VARCHAR)
+  RETURNS BOOLEAN AS
+  $t$ BEGIN
+    RETURN CASE
+      WHEN type='pet_owner'
+      THEN EXISTS(SELECT *
+                  FROM pet_owners p
+                  WHERE p.email=input_email)
+      WHEN type='pt_caretaker' OR type='ft_caretaker'
+      THEN EXISTS(SELECT *
+                  FROM caretakers c
+                  WHERE c.email=input_email)
+      WHEN type='pt_user' OR type='ft_user'
+      THEN EXISTS(SELECT c.email
+                    FROM caretakers c JOIN pet_owners p ON c.email=p.email
+                    WHERE c.email=input_email)
+      WHEN type='pcs_admin'
+      THEN EXISTS(SELECT *
+                  FROM pcs_admins p
+                  WHERE p.email=input_email)
+      ELSE FALSE END; END; $t$
+  LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION check_password(
+  type VARCHAR,
+  input_email VARCHAR)
+  RETURNS VARCHAR AS 
+  $t$ BEGIN
+    RETURN CASE
+      WHEN type='pet_owner'
+      THEN (SELECT p.password
+                  FROM pet_owners p
+                  WHERE p.email=input_email)
+      WHEN type='pt_caretaker' OR type='ft_caretaker'
+      THEN (SELECT pt.password
+                  FROM pt_caretakers pt
+                  WHERE pt.email=input_email
+                  UNION
+                  SELECT password
+                  FROM ft_caretakers
+                  WHERE email=input_email)
+      WHEN type='pt_user' OR type='ft_user'
+      THEN (SELECT p.password
+                  FROM caretakers c JOIN pet_owners p ON c.email=p.email
+                  WHERE c.email=input_email)
+      WHEN type='pcs_admin'
+      THEN (SELECT p.password
+            FROM pcs_admins p
+            WHERE p.email=input_email)
+      ELSE NULL END; END; $t$
+  LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION add_ft_caretaker(name VARCHAR, email VARCHAR, password VARCHAR)
+RETURNS VARCHAR AS
+' BEGIN
+INSERT INTO caretakers VALUES(email); INSERT INTO ft_caretakers VALUES(email, password, name, NULL); RETURN email; END; '
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION add_pt_caretaker(name VARCHAR, email VARCHAR, password VARCHAR)
+RETURNS VARCHAR AS
+' BEGIN
+INSERT INTO caretakers VALUES(email); INSERT INTO pt_caretakers VALUES(email, password, name); RETURN email; END; '
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION add_pt_user(name VARCHAR, email VARCHAR, password VARCHAR)
+RETURNS VARCHAR AS
+' BEGIN
+INSERT INTO caretakers VALUES(email); INSERT INTO pt_caretakers VALUES(email, password, name); INSERT INTO pet_owners VALUES(email, password, name, NULL); RETURN email; END; '
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION add_ft_user(name VARCHAR, email VARCHAR, password VARCHAR)
+RETURNS VARCHAR AS 
+' BEGIN
+INSERT INTO caretakers VALUES(email); INSERT INTO ft_caretakers VALUES(email, password, name, NULL); INSERT INTO pet_owners VALUES(email, password, name, NULL); RETURN email; END; '
+LANGUAGE plpgsql;
