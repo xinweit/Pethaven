@@ -59,12 +59,11 @@ export default function SignUp({ setAuth }) {
 		email: "",
 		password: "",
 		confirmPassword: "",
-		firstName: "",
-		lastName: "",
+		name: "",
 		type: "",
 	});
 
-	const { email, password, confirmPassword, firstName, lastName, type } = inputs;
+	const { email, password, confirmPassword, name, type } = inputs;
 
 	const handleChange = (e) => {
 		setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -73,8 +72,7 @@ export default function SignUp({ setAuth }) {
 	const onSubmitForm = async (e) => {
 		e.preventDefault();
 		try {
-			var fullName = firstName + " " + lastName;
-			const body = { fullName, type, email, password };
+			const body = { name, type, email, password };
 			const response = await fetch("http://localhost:5002/auth/signup", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
@@ -103,31 +101,6 @@ export default function SignUp({ setAuth }) {
 				</Typography>
 				<form className={classes.form} onSubmit={onSubmitForm}>
 					<Grid container spacing={2}>
-						<Grid item xs={12} sm={6}>
-							<TextField
-								name="firstName"
-								variant="outlined"
-								required
-								fullWidth
-								id="firstName"
-								label="First Name"
-								autoFocus
-								value={firstName}
-								onChange={(e) => handleChange(e)}
-							/>
-						</Grid>
-						<Grid item xs={12} sm={6}>
-							<TextField
-								variant="outlined"
-								required
-								fullWidth
-								id="lastName"
-								label="Last Name"
-								name="lastName"
-								value={lastName}
-								onChange={(e) => handleChange(e)}
-							/>
-						</Grid>
 						<Grid item xs={12}>
 							<FormControl
 								fullWidth
@@ -156,6 +129,19 @@ export default function SignUp({ setAuth }) {
 									<option value={"ft_user"}>Full Time User</option>
 								</Select>
 							</FormControl>
+						</Grid>
+						<Grid item xs={12}>
+							<TextField
+								name="name"
+								variant="outlined"
+								required
+								fullWidth
+								id="name"
+								label="Name"
+								autoFocus
+								value={name}
+								onChange={(e) => handleChange(e)}
+							/>
 						</Grid>
 						<Grid item xs={12}>
 							<TextField
