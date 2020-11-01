@@ -7,14 +7,16 @@ const cors = require("cors");
 const port = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json()); //req.body
-app.listen(port, () => {
-	console.log(`server is up and listening on port ${port}`);
-});
 
 /* ROUTES */
 app.post("/signup");
 
-// sign in
+// signin & signup
 app.use("/auth", require("./routes/auth"));
 
-// sign up
+// home
+app.use("/home", require("./routes/home"));
+
+app.listen(port, () => {
+	console.log(`server is up and listening on port ${port}`);
+});
