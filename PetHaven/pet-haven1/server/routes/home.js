@@ -31,34 +31,23 @@ router.get("/", authorization, async (req, res) => {
 
 router.get("/profile", authorization, async (req, res) => {
 	try {
-		var tableName = "";
-		var selectItems = "";
+		var query = "";
 
 		if (req.type == "pet_owner") {
-			tableName = "pet_owners";
-			selectItems = "email, name, credit_card";
+			query = "SELECT email, name, credit_card FROM pet_owners WHERE email = $1";
 		} else if (req.type == "pt_caretaker") {
-			tableName = "pt_caretakers";
-			selectItems = "email, name";
+			query = "SELECT email, name FROM pt_caretakers WHERE email = $1";
 		} else if (req.type == "ft_caretaker") {
-			tableName = "ft_caretakers";
-			selectItems = "email, name, pet_day";
+			query = "SELECT email, name, pet_day FROM ft_caretakers WHERE email = $1";
 		} else if (req.type == "pt_users") {
-			tableName = "pt_caretakers";
-			selectItems = "email, name";
+			query = "SELECT email, name FROM pt_caretakers WHERE email = $1";
 		} else if (req.type == "ft_users") {
-			tableName = "ft_caretakers";
-			selectItems = "email, name, pet_day";
+			query = "SELECT email, name, pet_day FROM ft_caretakers WHERE email = $1";
 		} else if (req.type == "pcs_admin") {
-			tableName = "pcs_admins";
-			selectItems = "email, name";
+			query = "SELECT email, name FROM pcs_admins WHERE email = $1";
 		}
 
-		const profile = await pool.query("SELECT $1 FROM $2 WHERE email = $3", [
-			selectItems,
-			tableName,
-			req.user,
-		]);
+		const profile = await pool.query(query, [req.user]);
 
 		res.json(profile.rows);
 	} catch (error) {
