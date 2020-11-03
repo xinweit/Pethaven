@@ -31,7 +31,7 @@ export default function UserProfile({ setAuth }) {
 
 	return (
 		<Fragment>
-			<h1>Profiel {name}</h1>
+			<h1>Profile {name}</h1>
 			<Button onClick={(e) => logout(e)}>Logout</Button>
 		</Fragment>
 	);

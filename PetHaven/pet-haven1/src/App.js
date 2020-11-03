@@ -5,17 +5,7 @@ import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Home from "./components/Home";
 import UserProfile from "./components/UserProfile";
-
-function PrivateRoute ({component: Component, setAuth, authed, ...rest}) {
-    return (
-		<Route
-			{...rest}
-			render={(props) => authed === true
-				? <Component {...props} setAuth={setAuth}/>
-				: <Redirect to={{pathname: '/signin', state: {from: props.location}}} />}
-		/>
-    )
-}
+import Landing from "./components/Landing";
 
 function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -24,7 +14,7 @@ function App() {
 		setIsAuthenticated(boolean);
 	};
 
-	async function isAuth() {
+	const checkAuthenticated = async () => {
 		try {
 			const response = await fetch("http://localhost:5002/auth/is-verify", {
 				method: "GET",
@@ -37,16 +27,27 @@ function App() {
 		} catch (error) {
 			console.error(error.message);
 		}
-	}
+	};
 
 	useEffect(async () => {
-		isAuth();
-	});
+		checkAuthenticated();
+	}, []);
 
 	return (
 		<Fragment>
 			<Router>
 				<Switch>
+					<Route
+						exact
+						path="/"
+						render={(props) =>
+							!isAuthenticated ? (
+								<Landing {...props} setAuth={setAuth} />
+							) : (
+								<Redirect to="/home" />
+							)
+						}
+					/>
 					<Route
 						path="/signin"
 						render={(props) =>
