@@ -12,7 +12,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
+import ControlledOpenSelect from './DropDownType'
+import SignIn from './SignIn'
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -47,6 +48,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SignUp() {
+  function handleClick(){
+    return <SignIn />
+  }
   const classes = useStyles();
 
   return (
@@ -57,7 +61,10 @@ export default function SignUp() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+        Welcome to Pet Haven! 
+        </Typography>
+        <Typography component="h1" variant="h5">
+        Sign up below 
         </Typography>
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
@@ -84,6 +91,9 @@ export default function SignUp() {
                 autoComplete="lname"
               />
             </Grid>
+            <Grid>
+            <ControlledOpenSelect />
+            </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
@@ -107,6 +117,18 @@ export default function SignUp() {
                 autoComplete="current-password"
               />
             </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                required
+                fullWidth
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                id="confirmPassword"
+                autoComplete="current-password"
+              />
+            </Grid>
             {/* <Grid item xs={12}> */}
               {/* <FormControlLabel
                 control={<Checkbox value="allowExtraEmails" color="primary" />}
@@ -121,11 +143,11 @@ export default function SignUp() {
             color="primary"
             className={classes.submit}
           >
-            Welcome to Pet Haven! Sign up below!
+            Sign me up!
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link href="" onClick={handleClick} variant="body2">
                 Already have an account? Sign in
               </Link>
             </Grid>

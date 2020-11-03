@@ -104,4 +104,18 @@ CREATE TABLE bids_for(
     PRIMARY KEY(advertisement_email, pet_category, start_date, end_date, pet_email, pet_name)
 );
 
+--triggers/queries
+CREATE OR REPLACE FUNCTION add_ft_employee(name VARCHAR,
+age VARCHAR, email VARCHAR, password VARCHAR, pet_day INTEGER)
+RETURNS NUMERIC AS
+' BEGIN
+INSERT INTO caretakers VALUES(email); RETURN 1; END; '
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION add_pt_employee(name VARCHAR,
+age INTEGER, email VARCHAR, password VARCHAR)
+RETURNS NUMERIC AS
+' BEGIN
+INSERT INTO caretakers VALUES(email); RETURN 1; END; '
+LANGUAGE plpgsql;
 
