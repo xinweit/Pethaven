@@ -12,7 +12,7 @@ app.listen(5002, ()=>{
 /* ROUTES */
 
 //create new advertisement
-app.post("/:email/advertisements", async (req, res) => {
+app.post("/", authorization, async (req, res) => {
     try {
         const { email } = req.params;
         const { pet_category, start_date, end_date, daily_price } = req.body;
@@ -27,7 +27,7 @@ app.post("/:email/advertisements", async (req, res) => {
 });
 
 //get all advertisement details for this caretaker
-app.get("/:email/advertisements", async (req, res) => {
+app.get("/", authorization, async (req, res) => {
     try {
         const { email } = req.params;
         const details = await pool.query(
@@ -41,7 +41,7 @@ app.get("/:email/advertisements", async (req, res) => {
 }); 
 
 //update advertisement information
-app.put("/:email/advertisements", async (req, res) => {
+app.put("/", authorization, async (req, res) => {
     try {
         const { email } = req.params;
         const { pet_category, start_date, end_date, daily_price } = req.body;
@@ -58,7 +58,7 @@ app.put("/:email/advertisements", async (req, res) => {
 pet_category, start_date, end_date, daily_price
 
 //delete pet info
-app.delete("/:email/advertisements", async (req, res) => {
+app.delete("/", authorization, async (req, res) => {
     try {
         const { email } = req.params;
         const { pet_category, start_date, end_date } = req.body;
