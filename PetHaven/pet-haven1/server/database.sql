@@ -14,7 +14,8 @@ CREATE TABLE pet_owners(
 CREATE TABLE pt_caretakers(
     email VARCHAR(255) PRIMARY KEY,
     password VARCHAR (255),
-    name VARCHAR(255), 
+    name VARCHAR(255),
+    rating float8,
     FOREIGN KEY(email) REFERENCES caretakers(email)
 );
 
@@ -22,6 +23,7 @@ CREATE TABLE ft_caretakers(
     email VARCHAR(255) PRIMARY KEY,
     password VARCHAR (255),
     name VARCHAR(255),
+    rating float8,
     pet_day integer,
     FOREIGN KEY(email) REFERENCES caretakers(email)
 );
