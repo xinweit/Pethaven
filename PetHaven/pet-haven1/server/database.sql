@@ -76,6 +76,7 @@ CREATE TABLE takes_leaves(
 CREATE TABLE specifies(
     pet_category VARCHAR(255),
     base_daily_price NUMERIC,
+    bonus NUMERIC,
     ft_email VARCHAR(255) REFERENCES ft_caretakers(email),
     pcs_email VARCHAR(255) REFERENCES pcs_admins(email),
     PRIMARY KEY(ft_email, pcs_email)
