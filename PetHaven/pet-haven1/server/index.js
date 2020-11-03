@@ -17,6 +17,12 @@ app.use("/auth", require("./routes/auth"));
 // home
 app.use("/home", require("./routes/home"));
 
+// advertisements
+app.use("/home/advertisements", require("./routes/home/advertisements"));
+
+// specifies
+app.use("/home/specifies", require("./routes/home/specifies"));
+
 app.listen(port, () => {
 	console.log(`server is up and listening on port ${port}`);
 });
