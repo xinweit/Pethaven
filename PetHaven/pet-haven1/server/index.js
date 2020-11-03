@@ -17,6 +17,12 @@ app.use("/auth", require("./routes/auth"));
 // home
 app.use("/home", require("./routes/home"));
 
+// pet owners
+app.use("/petowners", require("./routes/petowners"));
+
+// pets
+app.use("/pets", require("./routes/pets"));
+
 app.listen(port, () => {
 	console.log(`server is up and listening on port ${port}`);
 });
