@@ -49,14 +49,16 @@ CREATE TABLE advertisements(
     end_date date,
     daily_price NUMERIC,
     email VARCHAR(255) REFERENCES caretakers(email) ON DELETE CASCADE,
-    PRIMARY KEY(email, pet_category, start_date, end_date)
+    PRIMARY KEY(email, pet_category, start_date, end_date),
+    CHECK (start_date < end_date)
 );
 
 CREATE TABLE specifies_available_days(
     start_date date,
     end_date date,
     email VARCHAR(255) REFERENCES pt_caretakers(email) ON DELETE CASCADE,
-    PRIMARY KEY(start_date, end_date, email)
+    PRIMARY KEY(start_date, end_date, email),
+    CHECK (start_date < end_date)
 );
 
 CREATE TABLE salaries(
@@ -70,7 +72,8 @@ CREATE TABLE takes_leaves(
     start_date date,
     end_date date,
     email VARCHAR(255) REFERENCES ft_caretakers(email) ON DELETE CASCADE,
-    PRIMARY KEY(start_date, end_date, email)
+    PRIMARY KEY(start_date, end_date, email),
+    CHECK (start_date <= end_date)
 );
 
 CREATE TABLE specifies(
@@ -89,7 +92,7 @@ CREATE TABLE bids_for(
     timestamp time,
     payment_method VARCHAR(255),
     rating_given NUMERIC,
-    is_successful BOOLEAN,
+    is_successful BOOLEAN DEFAULT FALSE,
     feedback VARCHAR(255),
     start_date DATE,
     end_date DATE,
@@ -98,8 +101,12 @@ CREATE TABLE bids_for(
     owner_email VARCHAR(255),
     pet_name VARCHAR(255),
     FOREIGN KEY (start_date, end_date, pet_category, advertisement_email) REFERENCES advertisements(start_date, end_date, pet_category, email) ON DELETE CASCADE,
-    FOREIGN KEY(owner_email, pet_name) REFERENCES owns_pets(email, pet_name) ON DELETE CASCADE,
-    PRIMARY KEY(advertisement_email, pet_category, start_date, end_date, owner_email, pet_name)
+    FOREIGN KEY(owner_email, pet_name) REFERENCES owns_pets(email, pet_name) ON DELETE CASCADE ON UPDATE CASCADE,
+    PRIMARY KEY(advertisement_email, pet_category, start_date, end_date, owner_email, pet_name),
+    CHECK (bid_start_date < bid_end_date),
+    CHECK ( (is_successful == FALSE AND rating_given NULL AND feedback NULL) 
+    OR (is_successful == TRUE AND rating_given NOT NULL AND feedback NOT NULL) ),
+    CHECK ( (rating_given >= 0 AND rating_given <= 10) OR (rating_given NULL) )
 );
 
 CREATE OR REPLACE FUNCTION login(
