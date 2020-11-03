@@ -1,8 +1,7 @@
-import { Button } from "@material-ui/core";
 import { React, Fragment, useState, useEffect } from "react";
-import Link from "@material-ui/core/Link";
+import { Button } from "@material-ui/core";
 
-export default function Home({ setAuth }) {
+export default function UserProfile({ setAuth }) {
 	const [name, setName] = useState("");
 
 	async function getName() {
@@ -32,10 +31,8 @@ export default function Home({ setAuth }) {
 
 	return (
 		<Fragment>
-			<h1>Home {name}</h1>
-			<Link href="/user_profile">Profile</Link>
+			<h1>Profiel {name}</h1>
 			<Button onClick={(e) => logout(e)}>Logout</Button>
-		
 		</Fragment>
 	);
 }

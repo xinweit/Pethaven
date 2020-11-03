@@ -4,6 +4,18 @@ import "./App.css";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Home from "./components/Home";
+import UserProfile from "./components/UserProfile";
+
+function PrivateRoute ({component: Component, setAuth, authed, ...rest}) {
+    return (
+		<Route
+			{...rest}
+			render={(props) => authed === true
+				? <Component {...props} setAuth={setAuth}/>
+				: <Redirect to={{pathname: '/signin', state: {from: props.location}}} />}
+		/>
+    )
+}
 
 function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -27,7 +39,7 @@ function App() {
 		}
 	}
 
-	useEffect(() => {
+	useEffect(async () => {
 		isAuth();
 	});
 
@@ -36,7 +48,6 @@ function App() {
 			<Router>
 				<Switch>
 					<Route
-						exact
 						path="/signin"
 						render={(props) =>
 							!isAuthenticated ? (
@@ -47,18 +58,16 @@ function App() {
 						}
 					/>
 					<Route
-						exact
 						path="/signup"
 						render={(props) =>
 							!isAuthenticated ? (
 								<SignUp {...props} setAuth={setAuth} />
 							) : (
-								<Redirect to="/signin" />
+								<Redirect to="/home" />
 							)
 						}
 					/>
 					<Route
-						exact
 						path="/home"
 						render={(props) =>
 							isAuthenticated ? (
