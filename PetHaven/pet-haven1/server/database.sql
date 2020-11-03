@@ -15,17 +15,17 @@ CREATE TABLE pt_caretakers(
     email VARCHAR(255) PRIMARY KEY,
     password VARCHAR (255),
     name VARCHAR(255),
-    rating float8,
-    FOREIGN KEY(email) REFERENCES caretakers(email)
+    rating float8 DEFAULT 0,
+    FOREIGN KEY(email) REFERENCES caretakers(email) ON DELETE CASCADE
 );
 
 CREATE TABLE ft_caretakers(
     email VARCHAR(255) PRIMARY KEY,
     password VARCHAR (255),
     name VARCHAR(255),
-    rating float8,
+    rating float8 DEFAULT 0,
     pet_day integer,
-    FOREIGN KEY(email) REFERENCES caretakers(email)
+    FOREIGN KEY(email) REFERENCES caretakers(email) ON DELETE CASCADE
 );
 
 CREATE TABLE pcs_admins(
@@ -35,7 +35,7 @@ CREATE TABLE pcs_admins(
 );
 
 CREATE TABLE owns_pets(
-    email VARCHAR(255) REFERENCES pet_owners(email),
+    email VARCHAR(255) REFERENCES pet_owners(email) ON DELETE CASCADE,
     pet_name VARCHAR(50),
     special_requirments VARCHAR(255),
     pet_category VARCHAR(255),
@@ -48,36 +48,36 @@ CREATE TABLE advertisements(
     start_date date,
     end_date date,
     daily_price NUMERIC,
-    email VARCHAR(255) REFERENCES caretakers(email),
+    email VARCHAR(255) REFERENCES caretakers(email) ON DELETE CASCADE,
     PRIMARY KEY(email, pet_category, start_date, end_date)
 );
 
 CREATE TABLE specifies_available_days(
     start_date date,
     end_date date,
-    email VARCHAR(255) REFERENCES pt_caretakers(email),
+    email VARCHAR(255) REFERENCES pt_caretakers(email) ON DELETE CASCADE,
     PRIMARY KEY(start_date, end_date, email)
 );
 
 CREATE TABLE salaries(
     payment_date date,
     payment_amount integer,
-    email VARCHAR(255) REFERENCES caretakers(email),
+    email VARCHAR(255) REFERENCES caretakers(email) ON DELETE CASCADE,
     PRIMARY KEY(payment_date, email)
 );
 
 CREATE TABLE takes_leaves(
     start_date date,
     end_date date,
-    email VARCHAR(255) REFERENCES ft_caretakers(email),
+    email VARCHAR(255) REFERENCES ft_caretakers(email) ON DELETE CASCADE,
     PRIMARY KEY(start_date, end_date, email)
 );
 
 CREATE TABLE specifies(
     pet_category VARCHAR(255),
     base_daily_price NUMERIC,
-    ft_email VARCHAR(255) REFERENCES ft_caretakers(email),
-    pcs_email VARCHAR(255) REFERENCES pcs_admins(email),
+    ft_email VARCHAR(255) REFERENCES ft_caretakers(email) ON DELETE CASCADE,
+    pcs_email VARCHAR(255) REFERENCES pcs_admins(email) ON DELETE CASCADE,
     PRIMARY KEY(ft_email, pcs_email)
 );
 
@@ -95,11 +95,11 @@ CREATE TABLE bids_for(
     end_date DATE,
     pet_category VARCHAR(255),
     advertisement_email VARCHAR(255),  
-    pet_email VARCHAR(255),
+    owner_email VARCHAR(255),
     pet_name VARCHAR(255),
-    FOREIGN KEY (start_date, end_date, pet_category, advertisement_email) REFERENCES advertisements(start_date, end_date, pet_category, email),
-    FOREIGN KEY(pet_email, pet_name) REFERENCES owns_pets(email, pet_name),
-    PRIMARY KEY(advertisement_email, pet_category, start_date, end_date, pet_email, pet_name)
+    FOREIGN KEY (start_date, end_date, pet_category, advertisement_email) REFERENCES advertisements(start_date, end_date, pet_category, email) ON DELETE CASCADE,
+    FOREIGN KEY(owner_email, pet_name) REFERENCES owns_pets(email, pet_name) ON DELETE CASCADE,
+    PRIMARY KEY(advertisement_email, pet_category, start_date, end_date, owner_email, pet_name)
 );
 
 CREATE OR REPLACE FUNCTION login(
