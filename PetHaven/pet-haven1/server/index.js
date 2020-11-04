@@ -17,6 +17,9 @@ app.use("/auth", require("./routes/auth"));
 // home
 app.use("/home", require("./routes/home"));
 
+// profile
+app.use("/profile", require("./routes/profile"));
+
 app.listen(port, () => {
 	console.log(`server is up and listening on port ${port}`);
 });

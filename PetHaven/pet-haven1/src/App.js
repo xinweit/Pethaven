@@ -1,11 +1,17 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Route, Switch, BrowserRouter as Router, Redirect } from "react-router-dom";
+import {
+	Route,
+	Switch,
+	BrowserRouter as Router,
+	Redirect,
+} from "react-router-dom";
 import "./App.css";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Home from "./components/Home";
 import UserProfile from "./components/UserProfile";
 import Landing from "./components/Landing";
+import MenuAppBar from "./components/MenuAppBar";
 
 function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -14,27 +20,32 @@ function App() {
 		setIsAuthenticated(boolean);
 	};
 
-	const checkAuthenticated = async () => {
+	async function checkAuthenticated() {
 		try {
-			const response = await fetch("http://localhost:5002/auth/is-verify", {
+			let response = fetch("http://localhost:5002/auth/is-verify", {
 				method: "GET",
 				headers: { token: localStorage.token },
 			});
 
-			const parseRes = await response.json();
+			let result = await response;
 
-			parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
+			const parseRes = await result.json();
+
+			parseRes === true
+				? setIsAuthenticated(true)
+				: setIsAuthenticated(false);
 		} catch (error) {
 			console.error(error.message);
 		}
-	};
+	}
 
-	useEffect(async () => {
+	useEffect(() => {
 		checkAuthenticated();
 	}, []);
 
 	return (
 		<Fragment>
+			<MenuAppBar setAuth={setAuth} isAuthenticated={isAuthenticated} />
 			<Router>
 				<Switch>
 					<Route
@@ -72,12 +83,29 @@ function App() {
 						path="/home"
 						render={(props) =>
 							isAuthenticated ? (
-								<Home {...props} setAuth={setAuth} />
+								<Home
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
 							) : (
-								<Redirect to="/signin" />
+								<Redirect to="/" />
 							)
 						}
 					/>
+					<Route
+						path="/user_profile"
+						render={(props) =>
+							isAuthenticated ? (
+								<UserProfile
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
+							) : null
+						}
+					/>
+					{/* <Redirect from="*" to="/signin" /> */}
 				</Switch>
 			</Router>
 		</Fragment>
