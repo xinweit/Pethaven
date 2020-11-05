@@ -83,9 +83,11 @@ export default function SignUp({ setAuth }) {
 			const parseRes = await response.json();
 
 			if (parseRes.token) {
-				localStorage.setItem("token", parseRes.token);
-				setAuth(true);
-				toast.success("Logged in Successfully");
+				//localStorage.setItem("token", parseRes.token);
+				//setAuth(true);
+				toast.success("Signed Up Successfully");
+				//return true;
+				window.location = "/";
 			} else {
 				setAuth(false);
 				toast.error(parseRes);
@@ -113,10 +115,7 @@ export default function SignUp({ setAuth }) {
 								variant="outlined"
 								className={classes.formControl}
 							>
-								<InputLabel
-									required
-									htmlFor="outlined-age-native-simple"
-								>
+								<InputLabel required htmlFor="outlined-age-native-simple">
 									Type
 								</InputLabel>
 								<Select
@@ -131,21 +130,12 @@ export default function SignUp({ setAuth }) {
 									}}
 								>
 									<option aria-label="None" value="" />
-									<option value={"pet_owner"}>
-										Pet Owner
-									</option>
-									<option value={"pt_caretaker"}>
-										Part Time Caretaker
-									</option>
-									<option value={"ft_caretaker"}>
-										Full Time Caretaker
-									</option>
-									<option value={"pt_user"}>
-										Part Time User
-									</option>
-									<option value={"ft_user"}>
-										Full Time User
-									</option>
+									<option value={"pet_owner"}>Pet Owner</option>
+									<option value={"pt_caretaker"}>Part Time Caretaker</option>
+									<option value={"ft_caretaker"}>Full Time Caretaker</option>
+									<option value={"pt_user"}>Part Time User</option>
+									<option value={"ft_user"}>Full Time User</option>
+									<option value={"pcs_admin"}>PCS Admin</option>
 								</Select>
 							</FormControl>
 						</Grid>

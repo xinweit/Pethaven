@@ -33,6 +33,8 @@ router.post("/signup", async (req, res) => {
 			query = "SELECT add_pt_user($3,$1,$2)";
 		} else if (type == "ft_user") {
 			query = "SELECT add_ft_user($3,$1,$2)";
+		} else {
+			query = "INSERT INTO pcs_admins VALUES($1,$2,$3) RETURNING $1";
 		}
 		const newUser = await pool.query(query, [email, bcryptPassword, name]);
 
