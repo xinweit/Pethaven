@@ -105,7 +105,7 @@ EXECUTE PROCEDURE update_PetDay();
 --    pet_category = NEW.pet_category and 
 --    start_date = NEW.start_date and 
 --    end_date = NEW.end_date;
---    if NEW.bid_price >= base_dailyprice AND OLD.THEN
+--    if NEW.bid_price >= base_dailyprice THEN
 --     UPDATE bids_for SET is_successful = True 
 --     WHERE owner_email = NEW.owner_email and 
 --     pet_name = NEW.pet_name and 
