@@ -193,23 +193,30 @@ CREATE OR REPLACE FUNCTION check_password(
 CREATE OR REPLACE FUNCTION add_ft_caretaker(name VARCHAR, email VARCHAR, password VARCHAR)
 RETURNS VARCHAR AS
 ' BEGIN
-INSERT INTO caretakers VALUES(email); INSERT INTO ft_caretakers VALUES(email, password, name, 0); RETURN email; END; '
+INSERT INTO caretakers VALUES(email); 
+INSERT INTO ft_caretakers VALUES(email, password, name, 0); 
+RETURN email;
+END; '
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION add_pt_caretaker(name VARCHAR, email VARCHAR, password VARCHAR)
 RETURNS VARCHAR AS
 ' BEGIN
-INSERT INTO caretakers VALUES(email); INSERT INTO pt_caretakers VALUES(email, password, name); RETURN email; END; '
+INSERT INTO caretakers VALUES(email); INSERT INTO pt_caretakers VALUES(email, password, name); 
+RETURN email; END; '
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION add_pt_user(name VARCHAR, email VARCHAR, password VARCHAR)
 RETURNS VARCHAR AS
 ' BEGIN
-INSERT INTO caretakers VALUES(email); INSERT INTO pt_caretakers VALUES(email, password, name); INSERT INTO pet_owners VALUES(email, password, name, NULL); RETURN email; END; '
+INSERT INTO caretakers VALUES(email); INSERT INTO pt_caretakers VALUES(email, password, name); 
+INSERT INTO pet_owners VALUES(email, password, name, NULL); 
+RETURN email; END; '
 LANGUAGE plpgsql;
 
 CREATE OR REPLACE FUNCTION add_ft_user(name VARCHAR, email VARCHAR, password VARCHAR)
 RETURNS VARCHAR AS 
 ' BEGIN
-INSERT INTO caretakers VALUES(email); INSERT INTO ft_caretakers VALUES(email, password, name, 0); INSERT INTO pet_owners VALUES(email, password, name, NULL); RETURN email; END; '
+INSERT INTO caretakers VALUES(email); INSERT INTO ft_caretakers VALUES(email, password, name, 0); INSERT INTO pet_owners VALUES(email, password, name, NULL); 
+RETURN email; END; '
 LANGUAGE plpgsql;
