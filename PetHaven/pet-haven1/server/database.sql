@@ -114,25 +114,25 @@ CREATE OR REPLACE FUNCTION check_email_signup(
   $t$ BEGIN
     RETURN CASE
       WHEN type='pet_owner'
-      THEN EXISTS(SELECT *
+      THEN (EXISTS(SELECT *
                   FROM pet_owners p
-                  WHERE p.email=input_email)
+                  WHERE p.email=input_email) OR EXISTS(SELECT * FROM caretakers c WHERE c.email=input_email) OR check_email_signin('pcs_admin', input_email) = TRUE)
       WHEN type='pt_caretaker' OR type='ft_caretaker'
-      THEN EXISTS(SELECT *
+      THEN (EXISTS(SELECT *
                   FROM caretakers c
-                  WHERE c.email=input_email)
+                  WHERE c.email=input_email) OR check_email_signin('pet_owner', input_email) = TRUE OR check_email_signin('pcs_admin', input_email) = TRUE)
       WHEN type='pt_user' OR type='ft_user'
-      THEN EXISTS(SELECT email
+      THEN (EXISTS(SELECT email
                     FROM caretakers
                     WHERE email=input_email
                     UNION
                     SELECT email
                     FROM pet_owners
-                    WHERE email=input_email)
+                    WHERE email=input_email) OR check_email_signin('pet_owner', input_email) = TRUE OR EXISTS(SELECT * FROM caretakers c WHERE c.email=input_email))
       WHEN type='pcs_admin'
-      THEN EXISTS(SELECT *
+      THEN (EXISTS(SELECT *
                   FROM pcs_admins p
-                  WHERE p.email=input_email)
+                  WHERE p.email=input_email) OR EXISTS(SELECT * FROM caretakers c WHERE c.email=input_email) OR check_email_signin('pet_owner', input_email) = TRUE)
       ELSE FALSE END; END; $t$
   LANGUAGE plpgsql;
 
