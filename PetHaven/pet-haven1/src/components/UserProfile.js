@@ -1,6 +1,7 @@
 import { React, Fragment, useState, useEffect } from "react";
 import { Grid, Button, TextField, Table, TableRow, TableCell, TableHead, TableBody } from "@material-ui/core";
-import EditPet from "./EditPet";
+import EditPet from "./Pet/EditPet";
+import DeletePet from "./Pet/DeletePet";
 
 export default function UserProfile() {
 	const [profile, setProfile] = useState({
@@ -128,7 +129,7 @@ export default function UserProfile() {
 								<TableCell>Pet Category</TableCell>
 								<TableCell>Age</TableCell>
 								<TableCell>Edit</TableCell>
-
+								<TableCell>Delete</TableCell>
 							</TableRow>
 						</TableHead>
 						<TableBody>
@@ -139,6 +140,7 @@ export default function UserProfile() {
 									<TableCell>{pet.pet_category}</TableCell>
 									<TableCell>{pet.pet_age}</TableCell>
 									<TableCell><EditPet pet={pet} /></TableCell>
+									<TableCell><DeletePet pet={pet} /></TableCell>
 								</TableRow>;
 							})}
 						</TableBody>
