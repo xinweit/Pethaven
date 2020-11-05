@@ -1,5 +1,6 @@
 import { React, Fragment, useState, useEffect } from "react";
-import { Grid, Button, TextField } from "@material-ui/core";
+import { Grid, Button, TextField, Table, TableRow, TableCell, TableHead, TableBody } from "@material-ui/core";
+import EditPet from "./EditPet";
 
 export default function UserProfile() {
 	const [profile, setProfile] = useState({
@@ -8,7 +9,10 @@ export default function UserProfile() {
 		credit_card: "",
 		type: "",
 	});
+
 	const { email, name, credit_card, type } = profile;
+
+	const [pets, setPets] = useState([]);
 
 	async function getProfile() {
 		try {
@@ -20,6 +24,23 @@ export default function UserProfile() {
 			const parseRes = await response.json();
 
 			setProfile(parseRes);
+
+			//console.log(parseRes.type);
+
+			if (parseRes.type === "pet_owner") {
+				try {
+					const response1 = await fetch("http://localhost:5002/pets", {
+						method: "GET",
+						headers: { token: localStorage.token }
+					});
+					const parseRes1 = await response1.json();
+
+					setPets(parseRes1);
+
+				} catch (error) {
+					console.error(error.message);
+				}
+			}
 		} catch (error) {
 			console.error(error.message);
 		}
@@ -45,14 +66,12 @@ export default function UserProfile() {
 				body: JSON.stringify(body),
 			});
 
-			//const parseRes = await response.json();
-			//console.log(parseRes);
-
 			window.location = "/user_profile";
 		} catch (error) {
 			console.error(error.message);
 		}
 	}
+	console.log(pets);
 
 	return (
 		<Fragment>
@@ -96,6 +115,37 @@ export default function UserProfile() {
 					/>
 				</Grid>
 			</Grid>
+			<Grid container spacing={1}>
+				<Grid item xs={1}>
+					Pets:
+				</Grid>
+				<Grid item xs={12}>
+					<Table id='mytable'>
+						<TableHead>
+							<TableRow>
+								<TableCell>Name</TableCell>
+								<TableCell>Special Requirement</TableCell>
+								<TableCell>Pet Category</TableCell>
+								<TableCell>Age</TableCell>
+								<TableCell>Edit</TableCell>
+
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{pets.map(function (pet) {
+								return <TableRow key={pet.pet_name}>
+									<TableCell>{pet.pet_name}</TableCell>
+									<TableCell>{pet.special_requirements}</TableCell>
+									<TableCell>{pet.pet_category}</TableCell>
+									<TableCell>{pet.pet_age}</TableCell>
+									<TableCell><EditPet pet={pet} /></TableCell>
+								</TableRow>;
+							})}
+						</TableBody>
+					</Table>
+
+				</Grid>
+			</Grid>
 			<Grid container spacing={2}>
 				<Grid item xs={2}>
 					<Button
@@ -107,31 +157,7 @@ export default function UserProfile() {
 					</Button>
 				</Grid>
 			</Grid>
-			{/* <Table style={{ width: 400 }}>
-				<TableRow>
-					<TableCell style={{ width: 100 }}>Name: </TableCell>
-					<TableCell style={{ width: 200 }}>
-						{profile.name}
-						<Container align="right">
-							<Button>Edit</Button>
-						</Container>
-					</TableCell>
-				</TableRow>
-				<TableRow>
-					<TableCell style={{ width: 100 }}>Email: </TableCell>
-					<TableCell style={{ width: 200 }}>
-						{profile.email}
-					</TableCell>
-				</TableRow>
-				<TableRow>
-					<TableCell style={{ width: 100 }}>Credit Card: </TableCell>
-					<TableCell style={{ width: 200 }}>
-						{profile.credit_card != null
-							? profile.credit_card
-							: "None"}
-					</TableCell>
-				</TableRow>
-			</Table> */}
 		</Fragment>
 	);
+
 }

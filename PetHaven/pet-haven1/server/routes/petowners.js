@@ -23,11 +23,11 @@ router.put("/", authorization, async (req, res) => {
     try {
         const { name } = req.body;
         const updateName = await pool.query(
-            "UPDATE pet_owners SET name = $1 WHERE email = $2",
+            "UPDATE pet_owners SET name = $1 WHERE email = $2 RETURNING *",
             [name, req.user]
         );
 
-        res.json("User name is updated");
+        res.json(updateName.rows[0]);
     } catch (err) {
         console.error(err.message);
     }
@@ -38,11 +38,11 @@ router.put("/", authorization, async (req, res) => {
     try {
         const { password } = req.body;
         const updatePassword = await pool.query(
-            "UPDATE pet_owners SET name = $1 WHERE email = $2",
+            "UPDATE pet_owners SET name = $1 WHERE email = $2 RETURNING *",
             [password, req.user]
         );
 
-        res.json("Password is updated");
+        res.json(updatePassword.rows[0]);
     } catch (err) {
         console.error(err.message);
     }
@@ -50,14 +50,14 @@ router.put("/", authorization, async (req, res) => {
 
 //update pet owner credit card
 router.put("/", authorization, async (req, res) => {
-    try {   
+    try {
         const { credit_card } = req.body;
         const updateCreditcard = await pool.query(
-            "UPDATE pet_owners SET credit_card = $1 WHERE email = $2",
+            "UPDATE pet_owners SET credit_card = $1 WHERE email = $2 RETURNING *",
             [credit_card, req.user]
         );
 
-        res.json("Credit card is updated");
+        res.json(updateCreditcard.rows[0]);
     } catch (err) {
         console.error(err.message);
     }
@@ -68,12 +68,14 @@ router.delete("/", authorization, async (req, res) => {
     try {
         const { email } = req.params;
         const deleteAccount = await pool.query(
-            "DELETE FROM pet_owners WHERE email = $1",
+            "DELETE FROM pet_owners WHERE email = $1 RETURNING *",
             [email]
         );
 
-        res.json("Account is deleted");
+        res.json(deleteAccount.rows[0]);
     } catch (err) {
         console.error(err.message);
     }
 });
+
+module.exports = router;
