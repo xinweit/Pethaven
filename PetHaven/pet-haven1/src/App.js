@@ -13,6 +13,7 @@ import UserProfile from "./components/UserProfile";
 import Landing from "./components/Landing";
 import MenuAppBar from "./components/MenuAppBar";
 import Error from "./components/Error";
+import CreatePet from "./components/Pet/CreatePet";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
 
@@ -60,8 +61,8 @@ function App() {
 							!isAuthenticated ? (
 								<Landing {...props} setAuth={setAuth} />
 							) : (
-								<Redirect to="/home" />
-							)
+									<Redirect to="/home" />
+								)
 						}
 					/>
 					<Route
@@ -77,8 +78,8 @@ function App() {
 							!isAuthenticated ? (
 								<SignIn {...props} setAuth={setAuth} />
 							) : (
-								<Redirect to="/home" />
-							)
+									<Redirect to="/home" />
+								)
 						}
 					/>
 					<Route
@@ -87,8 +88,8 @@ function App() {
 							!isAuthenticated ? (
 								<SignUp {...props} setAuth={setAuth} />
 							) : (
-								<Redirect to="/home" />
-							)
+									<Redirect to="/home" />
+								)
 						}
 					/>
 					<Route
@@ -101,8 +102,8 @@ function App() {
 									setAuth={setAuth}
 								/>
 							) : (
-								<Redirect to="/" />
-							)
+									<Redirect to="/" />
+								)
 						}
 					/>
 					<Route
@@ -110,6 +111,18 @@ function App() {
 						render={(props) =>
 							isAuthenticated ? (
 								<UserProfile
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
+							) : null
+						}
+					/>
+					<Route
+						path="/create_pet"
+						render={(props) =>
+							isAuthenticated ? (
+								<CreatePet
 									{...props}
 									isAuthenticated={isAuthenticated}
 									setAuth={setAuth}

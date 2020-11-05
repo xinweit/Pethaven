@@ -18,7 +18,7 @@ const EditPet = ({ pet }) => {
                 },
                 body: JSON.stringify(body),
             });
-            console.log(response);
+            //console.log(response);
             window.location = "/user_profile"
         } catch (err) {
             console.error(err.message);
