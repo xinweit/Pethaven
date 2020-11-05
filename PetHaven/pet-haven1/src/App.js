@@ -12,6 +12,11 @@ import Home from "./components/Home";
 import UserProfile from "./components/UserProfile";
 import Landing from "./components/Landing";
 import MenuAppBar from "./components/MenuAppBar";
+import Error from "./components/Error";
+import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
+
+toast.configure();
 
 function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -60,6 +65,13 @@ function App() {
 						}
 					/>
 					<Route
+						exact
+						path="/error"
+						render={(props) => (
+							<Error {...props} setAuth={setAuth} />
+						)}
+					/>
+					<Route
 						path="/signin"
 						render={(props) =>
 							!isAuthenticated ? (
@@ -105,7 +117,7 @@ function App() {
 							) : null
 						}
 					/>
-					{/* <Redirect from="*" to="/signin" /> */}
+					<Redirect from="*" to="/error" />
 				</Switch>
 			</Router>
 		</Fragment>

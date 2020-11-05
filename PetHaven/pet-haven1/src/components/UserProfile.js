@@ -6,8 +6,9 @@ export default function UserProfile() {
 		email: "",
 		name: "",
 		credit_card: "",
+		type: "",
 	});
-	const { email, name, credit_card } = profile;
+	const { email, name, credit_card, type } = profile;
 
 	async function getProfile() {
 		try {

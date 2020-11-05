@@ -3,7 +3,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Button from "react-bootstrap/Button";
+import { toast } from "react-toastify";
 
 export default function MenuAppBar({ setAuth, isAuthenticated }) {
 	const [name, setName] = useState("");
@@ -29,8 +29,14 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 
 	const logout = (e) => {
 		e.preventDefault();
-		localStorage.removeItem("token");
-		setAuth(false);
+		try {
+			localStorage.removeItem("token");
+			setAuth(false);
+			window.location = "/";
+			toast.success("Logout successfully");
+		} catch (error) {
+			console.error(error.message);
+		}
 	};
 
 	return isAuthenticated ? (
@@ -38,7 +44,7 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 			<Navbar.Brand href="/home">PetHaven</Navbar.Brand>
 			<Nav className="mr-auto">
 				<Nav.Link href="/home">Home</Nav.Link>
-				<Nav.Link href="/profile">Care</Nav.Link>
+				<Nav.Link href="/profile">Advertisements</Nav.Link>
 				<Nav.Link href="#pricing">Pricing</Nav.Link>
 			</Nav>
 			<Nav bg="primary" className="justify-content-end">

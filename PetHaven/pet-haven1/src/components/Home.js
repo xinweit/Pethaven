@@ -25,8 +25,7 @@ export default function Home({ setAuth, isAuthenticated }) {
 
 	return (
 		<Fragment>
-			{/* <MenuAppBar setAuth={setAuth} isAuthenticated={isAuthenticated} /> */}
-			<h1>Home {isAuthenticated.toString()}</h1>
+			<h1>Home</h1>
 			<Link href="/user_profile">Profile</Link>
 		</Fragment>
 	);

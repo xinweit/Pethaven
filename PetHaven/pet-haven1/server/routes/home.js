@@ -25,6 +25,8 @@ router.get("/", authorization, async (req, res) => {
 
 		const user = await pool.query(query, [req.user]);
 
+		user.rows[0].type = req.type;
+		//console.log(user.rows[0]);
 		res.json(user.rows[0]);
 	} catch (error) {
 		console.error(error.message);

@@ -15,6 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
+import { toast } from "react-toastify";
 
 function Copyright() {
 	return (
@@ -34,10 +35,13 @@ const useStyles = makeStyles((theme) => ({
 		height: "100vh",
 	},
 	image: {
-		backgroundImage: "url(https://data.whicdn.com/images/328460687/original.jpg)",
+		backgroundImage:
+			"url(https://data.whicdn.com/images/328460687/original.jpg)",
 		backgroundRepeat: "no-repeat",
 		backgroundColor:
-			theme.palette.type === "light" ? theme.palette.grey[50] : theme.palette.grey[900],
+			theme.palette.type === "light"
+				? theme.palette.grey[50]
+				: theme.palette.grey[900],
 		backgroundSize: "cover",
 		backgroundPosition: "center",
 	},
@@ -88,9 +92,14 @@ export default function SignIn({ setAuth }) {
 
 			const parseRes = await response.json();
 
-			localStorage.setItem("token", parseRes.token);
-
-			setAuth(true);
+			if (parseRes.token) {
+				localStorage.setItem("token", parseRes.token);
+				setAuth(true);
+				toast.success("Logged in Successfully");
+			} else {
+				setAuth(false);
+				toast.error(parseRes);
+			}
 		} catch (error) {
 			console.error(error.message);
 		}
@@ -100,7 +109,15 @@ export default function SignIn({ setAuth }) {
 		<Grid container component="main" className={classes.root}>
 			<CssBaseline />
 			<Grid item xs={false} sm={4} md={7} className={classes.image} />
-			<Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+			<Grid
+				item
+				xs={12}
+				sm={8}
+				md={5}
+				component={Paper}
+				elevation={6}
+				square
+			>
 				<div className={classes.paper}>
 					<Avatar className={classes.avatar}>
 						<LockOutlinedIcon />
@@ -109,8 +126,15 @@ export default function SignIn({ setAuth }) {
 						Sign into Pet Haven!
 					</Typography>
 					<form className={classes.form} onSubmit={onSubmitForm}>
-						<FormControl fullWidth variant="outlined" className={classes.formControl}>
-							<InputLabel required htmlFor="outlined-age-native-simple">
+						<FormControl
+							fullWidth
+							variant="outlined"
+							className={classes.formControl}
+						>
+							<InputLabel
+								required
+								htmlFor="outlined-age-native-simple"
+							>
 								Type
 							</InputLabel>
 							<Select
@@ -126,10 +150,18 @@ export default function SignIn({ setAuth }) {
 							>
 								<option aria-label="None" value="" />
 								<option value={"pet_owner"}>Pet Owner</option>
-								<option value={"pt_caretaker"}>Part Time Caretaker</option>
-								<option value={"ft_caretaker"}>Full Time Caretaker</option>
-								<option value={"pt_user"}>Part Time User</option>
-								<option value={"ft_user"}>Full Time User</option>
+								<option value={"pt_caretaker"}>
+									Part Time Caretaker
+								</option>
+								<option value={"ft_caretaker"}>
+									Full Time Caretaker
+								</option>
+								<option value={"pt_user"}>
+									Part Time User
+								</option>
+								<option value={"ft_user"}>
+									Full Time User
+								</option>
 							</Select>
 						</FormControl>
 						<TextField
@@ -159,7 +191,9 @@ export default function SignIn({ setAuth }) {
 							onChange={(e) => handleChange(e)}
 						/>
 						<FormControlLabel
-							control={<Checkbox value="remember" color="primary" />}
+							control={
+								<Checkbox value="remember" color="primary" />
+							}
 							label="Remember me"
 						/>
 						<Button

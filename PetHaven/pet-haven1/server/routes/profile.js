@@ -25,7 +25,7 @@ router.put("/", authorization, async (req, res) => {
 
 		const user = await pool.query(query, [req.user, name]);
 
-		res.json(user.rows[0]);
+		res.json(user.rows);
 	} catch (error) {
 		console.error(error.message);
 		res.status(500).json("Server Error");
