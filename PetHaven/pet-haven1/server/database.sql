@@ -41,14 +41,14 @@ CREATE TABLE advertisements(
   daily_price NUMERIC,
   email VARCHAR(255) REFERENCES caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(email, pet_category, start_date, end_date),
-  CHECK (start_date < end_date)
+  CONSTRAINT "start date needs to be less than end date" CHECK (start_date <= end_date)
 );
 CREATE TABLE specifies_available_days(
   start_date date,
   end_date date,
   email VARCHAR(255) REFERENCES pt_caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(start_date, end_date, email),
-  CHECK (start_date < end_date)
+  CONSTRAINT "start date needsto be before end date" CHECK (start_date <= end_date)
 );
 CREATE TABLE salaries(
   payment_date date,
@@ -61,7 +61,7 @@ CREATE TABLE takes_leaves(
   end_date date,
   email VARCHAR(255) REFERENCES ft_caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(start_date, end_date, email),
-  CHECK (start_date <= end_date)
+  CONSTRAINT "start date needs to be before end date" CHECK (start_date <= end_date)
 );
 CREATE TABLE specifies(
   pet_category VARCHAR(255),
@@ -77,7 +77,7 @@ CREATE TABLE bids_for(
   bid_price NUMERIC,
   timestamp time,
   payment_method VARCHAR(255),
-  rating_given NUMERIC,
+  rating_given NUMERIC DEFAULT 0,
   is_successful BOOLEAN DEFAULT FALSE,
   feedback VARCHAR(255),
   start_date DATE,
@@ -101,67 +101,14 @@ CREATE TABLE bids_for(
     owner_email,
     pet_name
   ),
-  CHECK (bid_start_date < bid_end_date),
-  CHECK (
-    (
-      is_successful == FALSE
-      AND rating_given NULL
-      AND feedback NULL
-    )
-    OR (
-      is_successful == TRUE
-      AND rating_given NOT NULL
-      AND feedback NOT NULL
-    )
-  ),
-  CHECK (
+  CONSTRAINT "bid date needs to be more than end date" CHECK (bid_start_date < bid_end_date),
+  CONSTRAINT "invalid range for rating" CHECK (
     (
       rating_given >= 0
       AND rating_given <= 10
     )
-    OR (rating_given NULL)
   )
 );
-CREATE OR REPLACE FUNCTION login(
-    type VARCHAR,
-    input_email VARCHAR,
-    input_password VARCHAR
-  ) RETURNS BOOLEAN AS $t$ BEGIN RETURN CASE
-    WHEN type = 'pet_owner' THEN EXISTS(
-      SELECT *
-      FROM pet_owners p
-      WHERE p.email = input_email
-        AND p.password = input_password
-    )
-    WHEN type = 'caretaker' THEN EXISTS(
-      SELECT *
-      FROM caretakers c
-      WHERE c.email = input_email
-        AND (
-          EXISTS(
-            SELECT *
-            FROM pt_caretakers pt
-            WHERE pt.email = c.email
-              AND pt.password = input_password
-          )
-          OR EXISTS(
-            SELECT *
-            FROM ft_caretakers ft
-            WHERE ft.email = c.email
-              AND ft.password = input_password
-          )
-        )
-    )
-    WHEN type = 'pcs_admin' THEN EXISTS(
-      SELECT *
-      FROM pcs_admins p
-      WHERE p.email = input_email
-        AND p.password = input_password
-    )
-    ELSE 0
-  END;
-END;
-$t$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION check_email_signup(type VARCHAR, input_email VARCHAR) RETURNS BOOLEAN AS $t$ BEGIN RETURN CASE
     WHEN type = 'pet_owner' THEN EXISTS(
       SELECT *
@@ -254,10 +201,95 @@ CREATE OR REPLACE FUNCTION check_password(type VARCHAR, input_email VARCHAR) RET
 END;
 $t$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION add_ft_caretaker(name VARCHAR, email VARCHAR, password VARCHAR) RETURNS VARCHAR AS ' BEGIN
-INSERT INTO caretakers VALUES(email); INSERT INTO ft_caretakers VALUES(email, password, name, 0); RETURN email; END; ' LANGUAGE plpgsql;
+INSERT INTO caretakers VALUES(email); 
+INSERT INTO ft_caretakers VALUES(email, password, name, 0); 
+RETURN email;
+END; ' LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION add_pt_caretaker(name VARCHAR, email VARCHAR, password VARCHAR) RETURNS VARCHAR AS ' BEGIN
-INSERT INTO caretakers VALUES(email); INSERT INTO pt_caretakers VALUES(email, password, name); RETURN email; END; ' LANGUAGE plpgsql;
+INSERT INTO caretakers VALUES(email); INSERT INTO pt_caretakers VALUES(email, password, name); 
+RETURN email; END; ' LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION add_pt_user(name VARCHAR, email VARCHAR, password VARCHAR) RETURNS VARCHAR AS ' BEGIN
-INSERT INTO caretakers VALUES(email); INSERT INTO pt_caretakers VALUES(email, password, name); INSERT INTO pet_owners VALUES(email, password, name, NULL); RETURN email; END; ' LANGUAGE plpgsql;
+INSERT INTO caretakers VALUES(email); INSERT INTO pt_caretakers VALUES(email, password, name); 
+INSERT INTO pet_owners VALUES(email, password, name, NULL); 
+RETURN email; END; ' LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION add_ft_user(name VARCHAR, email VARCHAR, password VARCHAR) RETURNS VARCHAR AS ' BEGIN
 INSERT INTO caretakers VALUES(email); INSERT INTO ft_caretakers VALUES(email, password, name, 0); INSERT INTO pet_owners VALUES(email, password, name, NULL); RETURN email; END; ' LANGUAGE plpgsql;
+-- Show top 5 ft_caretaker earners
+SELECT *
+FROM salaries s
+  JOIN ft_caretakers ft ON s.email = ft.email
+WHERE date_trunc('month', s.payment_date) = date_trunc('month', (CURRENT_DATE))
+ORDER BY payment_amount DESC
+LIMIT 5;
+-- Show bottom 5 ft_caretaker performance
+SELECT *
+FROM salaries s
+  LEFT JOIN ft_caretakers ft ON s.email = ft.email
+WHERE date_trunc('month', s.payment_date) = date_trunc('month', (CURRENT_DATE))
+ORDER BY payment_amount ASC
+LIMIT 5;
+-- Check whether new leave results in no 2x 150 consecutive days
+CREATE OR REPLACE FUNCTION check_leave() RETURNS TRIGGER AS $$
+DECLARE total_count INTEGER;
+BEGIN
+SELECT COUNT(*) INTO total_count
+FROM (
+    SELECT extract(
+        day
+        from (
+            (
+              SELECT MIN(start_date)
+              FROM takes_leaves
+              WHERE email = NEW.email
+            ) - date_trunc('year', CURRENT_DATE)
+          )
+      ) AS difference
+    UNION ALL
+    SELECT table1.start_date - table1.end_date AS difference
+    FROM (
+        SELECT leaves.end_date AS end_date,
+          MIN(leaves2.start_date) AS start_date
+        FROM takes_leaves AS leaves,
+          takes_leaves AS leaves2
+        WHERE leaves2.start_date >= leaves.end_date
+          AND leaves.email = leaves2.email
+          AND leaves.email = NEW.email
+        GROUP BY leaves.end_date
+      ) AS table1
+    UNION ALL
+    SELECT extract(
+        day
+        from (
+            (
+              date_trunc('year', CURRENT_DATE) + interval '1 year' - interval '1 day'
+            ) - (
+              SELECT MAX(end_date)
+              FROM takes_leaves
+              WHERE email = NEW.email
+            )
+          )
+      ) AS difference
+  ) as bigtable
+WHERE bigtable.difference >= 150;
+IF total_count < 2 THEN RAISE EXCEPTION 'invalid leaves';
+DELETE FROM takes_leaves
+WHERE email = NEW.email
+  AND start_date = NEW.start_date
+  AND end_date = NEW.end_date;
+END IF;
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER is_valid_leave
+AFTER
+INSERT ON takes_leaves FOR EACH ROW EXECUTE PROCEDURE check_leave();
+INSERT INTO caretakers
+VALUES(email);
+INSERT INTO ft_caretakers
+VALUES(email, password, name, 0);
+INSERT INTO pet_owners
+VALUES(email, password, name, NULL);
+RETURN email;
+END;
+'
+LANGUAGE plpgsql;
