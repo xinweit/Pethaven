@@ -41,14 +41,14 @@ CREATE TABLE advertisements(
   daily_price NUMERIC,
   email VARCHAR(255) REFERENCES caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(email, pet_category, start_date, end_date),
-  CONSTRAINT "start date needs to be less than end date" CHECK (start_date <= end_date)
+  CONSTRAINT "start date needs to be earlier than end date" CHECK (start_date <= end_date)
 );
 CREATE TABLE specifies_available_days(
   start_date date,
   end_date date,
   email VARCHAR(255) REFERENCES pt_caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(start_date, end_date, email),
-  CONSTRAINT "start date needsto be before end date" CHECK (start_date <= end_date)
+  CONSTRAINT "start date needs to be earlier than end date" CHECK (start_date <= end_date)
 );
 CREATE TABLE salaries(
   payment_date date,
@@ -61,7 +61,7 @@ CREATE TABLE takes_leaves(
   end_date date,
   email VARCHAR(255) REFERENCES ft_caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(start_date, end_date, email),
-  CONSTRAINT "start date needs to be before end date" CHECK (start_date <= end_date)
+  CONSTRAINT "start date needs to be earlier than end date" CHECK (start_date <= end_date)
 );
 CREATE TABLE specifies(
   pet_category VARCHAR(255),
@@ -101,8 +101,8 @@ CREATE TABLE bids_for(
     owner_email,
     pet_name
   ),
-  CONSTRAINT "bid date needs to be more than end date" CHECK (bid_start_date < bid_end_date),
-  CONSTRAINT "invalid range for rating" CHECK (
+  CONSTRAINT "bid start date needs to be earlier than end date" CHECK (bid_start_date < bid_end_date),
+  CONSTRAINT "range for rating must be valid" CHECK (
     (
       rating_given >= 0
       AND rating_given <= 10
