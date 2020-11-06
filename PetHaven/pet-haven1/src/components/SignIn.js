@@ -93,6 +93,7 @@ export default function SignIn({ setAuth }) {
 				localStorage.setItem("token", parseRes.token);
 				setAuth(true);
 				toast.success("Logged in Successfully");
+				window.location = "/";
 			} else {
 				setAuth(false);
 				toast.error(parseRes);
