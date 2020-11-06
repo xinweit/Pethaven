@@ -42,6 +42,9 @@ app.use("/basedailyprice", require("./routes/basedailyprice"));
 // salary
 app.use("/salary", require("./routes/salary"));
 
+//bids for pet owner
+app.use("/bids", require("./routes/bids"));
+
 app.listen(port, () => {
 	console.log(`server is up and listening on port ${port}`);
 });

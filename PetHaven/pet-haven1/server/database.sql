@@ -72,7 +72,6 @@ CREATE TABLE specifies(
 CREATE TABLE bids_for(
   transfer_method VARCHAR(255),
   bid_price NUMERIC,
-  timestamp time,
   payment_method VARCHAR(255),
   rating_given NUMERIC DEFAULT 0,
   is_successful BOOLEAN DEFAULT FALSE,
