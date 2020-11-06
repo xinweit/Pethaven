@@ -44,7 +44,7 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 			<Navbar.Brand href="/home">PetHaven</Navbar.Brand>
 			<Nav className="mr-auto">
 				<Nav.Link href="/home">Home</Nav.Link>
-				<Nav.Link href="/profile">Advertisements</Nav.Link>
+				<Nav.Link href="/advertisements">Advertisements</Nav.Link>
 				<Nav.Link href="#pricing">Pricing</Nav.Link>
 			</Nav>
 			<Nav bg="primary" className="justify-content-end">

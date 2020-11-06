@@ -15,7 +15,7 @@ END; $$
 LANGUAGE PLPGSQL;
 
 CREATE TRIGGER valid_daily_price_check
-BEFORE INSERT OR DELETE 
+BEFORE INSERT
 ON advertisements
 FOR EACH ROW
 EXECUTE PROCEDURE check_daily_price();

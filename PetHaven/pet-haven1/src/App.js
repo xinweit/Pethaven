@@ -15,8 +15,9 @@ import MenuAppBar from "./components/MenuAppBar";
 import Error from "./components/Error";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
+import MakeAdvertisement from "./components/MakeAdvertisement";
+import ShowAdvertisements from "./components/ShowAdvertisements";
 
-toast.configure();
 
 function App() {
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -117,7 +118,31 @@ function App() {
 							) : null
 						}
 					/>
-					<Redirect from="*" to="/error" />
+					<Route
+						path="/advertisements/post"
+						render={(props) =>
+							isAuthenticated ? (
+								<MakeAdvertisement
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
+							) : null
+						}
+					/>
+					<Route
+						path="/advertisements"
+						render={(props) =>
+							isAuthenticated ? (
+								<ShowAdvertisements
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
+							) : null
+						}
+					/>
+					<Redirect from="*" to="/error" />					
 				</Switch>
 			</Router>
 		</Fragment>

@@ -26,7 +26,7 @@ export default function Home({ setAuth, isAuthenticated }) {
 	return (
 		<Fragment>
 			<h1>Home</h1>
-			<Link href="/user_profile">Profile</Link>
+			<Link href="/advertisements">Profile</Link>
 		</Fragment>
 	);
 }
