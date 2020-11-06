@@ -35,12 +35,12 @@ const EditPet = ({ pet }) => {
                 type="button"
                 className="btn btn-warning"
                 data-toggle="modal"
-                data-target={`#id${pet.pet_name}`}
+                data-target={`#id${pet.pet_name.replace(/\s/g,'')}`}
             >
                 Edit
 			</button>
 
-            <div className="modal" id={`id${pet.pet_name}`}>
+            <div className="modal" id={`id${pet.pet_name.replace(/\s/g,'')}`}>
                 <div className="modal-dialog">
                     <div className="modal-content">
                         <div className="modal-header">
@@ -65,7 +65,7 @@ const EditPet = ({ pet }) => {
                             <input
                                 type="text"
                                 className="form-control"
-                                value={special_requirements}
+                                value={special_requirements != null ? special_requirements : "none"}
                                 name="special_requirements"
                                 onChange={(e) => handleChange(e)}
                             />

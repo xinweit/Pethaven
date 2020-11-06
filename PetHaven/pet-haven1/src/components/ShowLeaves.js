@@ -3,14 +3,34 @@ import DatePicker from "react-datepicker";
 import { Link, Grid, Button, TextField, Table, TableRow, TableCell, TableHead, TableBody } from "@material-ui/core";
 import "react-datepicker/dist/react-datepicker.css";
 import CancelLeave from "./CancelLeave";
+import Error from "./Error";
 
 export default function ShowLeaves() {
     const[leaves, SetLeaves] = useState([]);
+    const [info, setInfo] = useState({
+		name: "",
+		email: "",
+		type: "",
+	});
 
+    const { name, email, type } = info;
+    async function getInfo() {
+		try {
+			const response = await fetch("http://localhost:5002/home/", {
+				method: "GET",
+				headers: { token: localStorage.token },
+			});
+
+			const parseRes = await response.json();
+			setInfo(parseRes);
+		} catch (error) {
+			console.error(error.message);
+		}
+    }
     const{start_date, end_date} = leaves;
     async function getLeave() {
         try{
-            const response = await fetch("http://localhost:5002/", {
+            const response = await fetch("http://localhost:5002/leaves", {
                 method: "GET",
                 headers: { token: localStorage.token },
               });
@@ -24,12 +44,13 @@ export default function ShowLeaves() {
 
 useEffect(()=>{
     getLeave();
+    getInfo();
 },[]);
 console.log(leaves);
-return (
+return type === "ft_caretaker" || type === "ft_user" ?(
 <Fragment>
 <div>
-    <h2>Select your leaves</h2>
+    <h2>These are your leaves </h2>
          </div>
          <table className="table">
             <thead>
@@ -51,5 +72,5 @@ return (
                     })}
             </tbody>
         </table>
-    </Fragment>);
+    </Fragment>) : <Error/>
 }

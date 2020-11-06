@@ -19,6 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 import MakeAdvertisement from "./components/MakeAdvertisement";
 import ShowAdvertisements from "./components/ShowAdvertisements";
 import CreateBaseDailyPrice from "./components/HomeViews/CreateBaseDailyPrice";
+import CreatePet from "./components/Pet/CreatePet"
 
 import Calendar from "./components/PostLeave";
 import ShowLeaves from "./components/ShowLeaves";
@@ -64,7 +65,7 @@ function App() {
 						path="/"
 						render={(props) =>
 							!isAuthenticated ? (
-								<Landing {...props} setAuth={setAuth} />
+								<SignIn {...props} setAuth={setAuth} />
 							) : (
 								<Redirect to="/home" />
 							)
@@ -77,7 +78,7 @@ function App() {
 							<Error {...props} setAuth={setAuth} />
 						)}
 					/>
-					<Route
+					{/* <Route
 						path="/signin"
 						render={(props) =>
 							!isAuthenticated ? (
@@ -86,7 +87,7 @@ function App() {
 								<Redirect to="/home" />
 							)
 						}
-					/>
+					/> */}
 					<Route
 						path="/signup"
 						render={(props) =>

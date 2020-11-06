@@ -2,6 +2,7 @@ import { React, Fragment, useState, useEffect } from "react";
 import DatePicker from "react-datepicker";
 import { Link, Grid, Button, TextField, Table, TableRow, TableCell, TableHead, TableBody } from "@material-ui/core";
 import "react-datepicker/dist/react-datepicker.css";
+import { toast } from "react-toastify";
 
 export default function Calendar() {
   const [profile, setProfile] = useState({
@@ -28,11 +29,12 @@ export default function Calendar() {
 	// 	setProfile({ ...profile, [e.target.name]: e.target.value });
 	// };
   
-      async function onSubmitForm() {
+    async function onSubmitForm(e) {
+        //e.preventDefault();
         try {
           const body = { start_date, end_date };
           console.log(body);
-          const response = await fetch("http://localhost:/leaves/", {
+          const response = await fetch("http://localhost:5002/leaves/", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -41,9 +43,11 @@ export default function Calendar() {
             body: JSON.stringify(body),
           });
     
-         window.location = "/setLeaves";
+          toast.success("Logged in Successfully");
+          window.location = "/leaves";
         } catch (error) {
           console.error(error.message);
+          toast.error(error.message);
         }
       }
 
@@ -80,7 +84,7 @@ export default function Calendar() {
 				<Button
 					variant="contained"
           color="primary"
-					onClick={() => onSubmitForm()}
+					onClick={(e) => onSubmitForm(e)}
 				>
 					Save
 				</Button>

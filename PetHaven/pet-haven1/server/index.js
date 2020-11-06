@@ -39,8 +39,6 @@ app.use("/caretakers", require("./routes/caretakers"));
 // base daily price
 app.use("/basedailyprice", require("./routes/basedailyprice"));
 
-//bids
-app.use("/bids",  require("./routes/bids"));
 // salary
 app.use("/salary", require("./routes/salary"));
 

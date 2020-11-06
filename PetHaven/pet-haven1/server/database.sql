@@ -98,7 +98,6 @@ CREATE TABLE bids_for(
     owner_email,
     pet_name
   ),
-  CONSTRAINT "bid start date needs to be earlier than end date" CHECK (bid_start_date < bid_end_date),
   CONSTRAINT "range for rating given must be valid" CHECK (
     (
       rating_given >= 0

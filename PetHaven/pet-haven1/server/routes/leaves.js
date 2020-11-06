@@ -5,10 +5,11 @@ const authorization = require("../middleware/authorization");
 router.post("/", authorization, async (req, res) => {
 	try {
         const {start_date, end_date} = req.body
-        var query = `INSERT INTO takes_leaves(email, start_date, end_date) 
+        var query = `INSERT INTO takes_leaves(start_date, end_date, email) 
         VALUES($1, $2, $3)`;
-		const profile = await pool.query(query, [req.user,start_date, end_date]);
+		const profile = await pool.query(query, [start_date, end_date, req.user]);
 		res.json("successful");
+		console.log(req.user);
 	} catch (error) {
 		console.error(error.message);
 		res.status(500).json("Server Error");
@@ -52,21 +53,20 @@ router.put("/", authorization, async (req, res) => {
 
 router.delete("/", authorization, async (req, res) => {
 	try {
-        const {start, end} = req.body
+        const {start_date, end_date} = req.body
 		var query = `DELETE FROM takes_leaves
                      WHERE 
-                     email = $1 
+                     email = $3 
                      and 
-                     start_date = $2
+                     start_date = $1
                      and 
-                     end_date = $3`;
-		const user = await pool.query(query, [email,start, end]);
+                     end_date = $2`;
+		const user = await pool.query(query, [start_date, end_date, req.user]);
 		res.json(user.rows[0]);
 	} catch (error) {
 		console.error(error.message);
 		res.status(500).json("Server Error");
 	}
 });
-
 
 module.exports = router;

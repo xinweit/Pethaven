@@ -49,6 +49,7 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 			<Nav className="mr-auto">
 				<Nav.Link href="/home">Home</Nav.Link>
 				<Nav.Link href="/advertisements" hidden={type === "pet_owner" || type === "pcs_admin"}>Advertisements</Nav.Link>
+				<Nav.Link href="/showleaves" hidden={type === "pet_owner" || type === "pcs_admin"}>Leaves</Nav.Link>
 			</Nav>
 			<Nav bg="primary" className="justify-content-end">
 				<NavDropdown title={name} id="basic-nav-dropdown">

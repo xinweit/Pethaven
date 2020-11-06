@@ -86,15 +86,14 @@ export default function PCSView() {
 			<Container>
 				<h4>
 					Daily Price Per Category
-					<Button
+				</h4>
+				<Button
 						variant="contained"
 						color="primary"
 						onClick={(e) => (window.location = "/create_basedailyprice")}
 					>
 						Create
 					</Button>
-				</h4>
-
 				<Table id="table2">
 					<TableHead>
 						<TableRow>

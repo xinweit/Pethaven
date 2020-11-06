@@ -15,17 +15,18 @@ export default function CancelLeave({leave}){
             console.log(start_date);
             console.log(end_date);
             const body = {start_date, end_date};
-            const response = await fetch("http://localhost/5002/", {
+            const response = await fetch("http://localhost:5002/leaves", {
                 method:"DELETE",
-                headers:{token:localStorage.token,
-                "Content-Type":"application/json"},
+                headers:{"Content-Type":"application/json",
+                    token:localStorage.token,
+                },
                 body: JSON.stringify(body)
             });
             // alert(body);
             // alert(start_date, end_date);
             window.location = "/showleaves"
         } catch (error) {
-
+            console.error(error.message);
         }
     };
     return (

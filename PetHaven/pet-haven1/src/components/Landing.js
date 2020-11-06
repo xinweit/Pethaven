@@ -4,8 +4,8 @@ import { Link } from "react-router-dom";
 const Landing = () => {
 	return (
 		<div className="jumbotron mt-5">
-			<h1>Welcome to the Todo List App</h1>
-			<p>Sign In and start building your todo list</p>
+			<h1>Welcome to Pet Haven!</h1>
+			{/* <p>Sign In and start building your todo list</p> */}
 			<Link to="/signin" className="btn btn-primary">
 				Sign In
 			</Link>
