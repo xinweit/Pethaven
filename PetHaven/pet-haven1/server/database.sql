@@ -41,14 +41,14 @@ CREATE TABLE advertisements(
   daily_price NUMERIC,
   email VARCHAR(255) REFERENCES caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(email, pet_category, start_date, end_date),
-  CONSTRAINT "start date needs to be less than end date" CHECK (start_date <= end_date)
+  CONSTRAINT "start date needs to be earlier than end date" CHECK (start_date < end_date)
 );
 CREATE TABLE specifies_available_days(
   start_date date,
   end_date date,
   email VARCHAR(255) REFERENCES pt_caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(start_date, end_date, email),
-  CONSTRAINT "start date needsto be before end date" CHECK (start_date <= end_date)
+  CONSTRAINT "start date needs to be earlier than end date" CHECK (start_date < end_date)
 );
 CREATE TABLE salaries(
   payment_date date,
@@ -61,7 +61,7 @@ CREATE TABLE takes_leaves(
   end_date date,
   email VARCHAR(255) REFERENCES ft_caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(start_date, end_date, email),
-  CONSTRAINT "start date needs to be before end date" CHECK (start_date <= end_date)
+  CONSTRAINT "start date needs to be earlier than end date" CHECK (start_date < end_date)
 );
 CREATE TABLE specifies(
   pet_category VARCHAR(255),
@@ -70,8 +70,6 @@ CREATE TABLE specifies(
   PRIMARY KEY(pet_category)
 );
 CREATE TABLE bids_for(
-  bid_start_date date,
-  bid_end_date date,
   transfer_method VARCHAR(255),
   bid_price NUMERIC,
   timestamp time,
@@ -100,8 +98,8 @@ CREATE TABLE bids_for(
     owner_email,
     pet_name
   ),
-  CONSTRAINT "bid date needs to be more than end date" CHECK (bid_start_date < bid_end_date),
-  CONSTRAINT "invalid range for rating" CHECK (
+  CONSTRAINT "bid start date needs to be earlier than end date" CHECK (bid_start_date < bid_end_date),
+  CONSTRAINT "range for rating given must be valid" CHECK (
     (
       rating_given >= 0
       AND rating_given <= 10
@@ -222,4 +220,185 @@ FROM salaries s
 WHERE date_trunc('month', s.payment_date) = date_trunc('month', (CURRENT_DATE))
 ORDER BY payment_amount ASC
 LIMIT 5;
+-- Check whether new leave results in no 2x 150 consecutive days
+CREATE OR REPLACE FUNCTION check_leave() RETURNS TRIGGER AS $$
+DECLARE total_count INTEGER;
+BEGIN
+SELECT COUNT(*) INTO total_count
+FROM (
+    SELECT extract(
+        day
+        from (
+            (
+              SELECT MIN(start_date)
+              FROM takes_leaves
+              WHERE email = NEW.email
+            ) - date_trunc('year', CURRENT_DATE)
+          )
+      ) AS difference
+    UNION ALL
+    SELECT table1.start_date - table1.end_date AS difference
+    FROM (
+        SELECT leaves.end_date AS end_date,
+          MIN(leaves2.start_date) AS start_date
+        FROM takes_leaves AS leaves,
+          takes_leaves AS leaves2
+        WHERE leaves2.start_date >= leaves.end_date
+          AND leaves.email = leaves2.email
+          AND leaves.email = NEW.email
+        GROUP BY leaves.end_date
+      ) AS table1
+    UNION ALL
+    SELECT extract(
+        day
+        from (
+            (
+              date_trunc('year', CURRENT_DATE) + interval '1 year' - interval '1 day'
+            ) - (
+              SELECT MAX(end_date)
+              FROM takes_leaves
+              WHERE email = NEW.email
+            )
+          )
+      ) AS difference
+  ) as bigtable
+WHERE bigtable.difference >= 150;
+IF total_count < 2 THEN RAISE EXCEPTION 'invalid leaves';
+DELETE FROM takes_leaves
+WHERE email = NEW.email
+  AND start_date = NEW.start_date
+  AND end_date = NEW.end_date;
+END IF;
+RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER is_valid_leave
+AFTER
+INSERT ON takes_leaves FOR EACH ROW EXECUTE PROCEDURE check_leave();
+INSERT INTO caretakers
+VALUES(email);
+INSERT INTO ft_caretakers
+VALUES(email, password, name, 0);
+INSERT INTO pet_owners
+VALUES(email, password, name, NULL);
+RETURN email;
+END;
+
+LANGUAGE plpgsql;
+
+
+-- calculate pt_caretaker salary for the month
+CREATE OR REPLACE FUNCTION check_pt_salary(
+    type VARCHAR,
+    input_email VARCHAR)
+    RETURNS INTEGER AS
+    $$ BEGIN
+    RETURN CASE
+      WHEN type='pt_caretaker' OR type='pt_user'
+      THEN (SELECT SUM(transactionRevenue)*0.75 AS revenue
+FROM (SELECT bid_price*(end_date-start_date) AS transactionRevenue FROM bids_for WHERE is_successful = true
+AND advertisement_email=input_email
+AND (extract(month from start_date) = extract(month from CURRENT_DATE)
+    AND extract(month from end_date) = extract(month from CURRENT_DATE))
+UNION ALL
+SELECT bid_price*(extract(day from end_date)) AS transactionRevenue FROM bids_for WHERE is_successful = true
+AND advertisement_email=input_email
+AND (extract(month from start_date) < extract(month from CURRENT_DATE)
+    AND extract(month from end_date) = extract(month from CURRENT_DATE))
+UNION ALL
+SELECT bid_price*(DATE_PART('days', 
+        DATE_TRUNC('month', CURRENT_DATE) 
+        + '1 MONTH'::INTERVAL 
+        - '1 DAY'::INTERVAL
+    )-extract(day from start_date)) AS transactionRevenue FROM bids_for WHERE is_successful = true
+AND advertisement_email=input_email
+AND (extract(month from end_date) > extract(month from CURRENT_DATE)
+    AND extract(month from start_date) = extract(month from CURRENT_DATE))) AS table1)
+
+    ELSE 
+    
+    (SELECT SUM(transactionRevenue)*0.25 AS revenue
+FROM (SELECT bid_price*(end_date-start_date) AS transactionRevenue FROM bids_for WHERE is_successful = true
+AND advertisement_email=input_email
+AND (extract(month from start_date) = extract(month from CURRENT_DATE)
+    AND extract(month from end_date) = extract(month from CURRENT_DATE))
+UNION ALL
+SELECT bid_price*(extract(day from end_date)) AS transactionRevenue FROM bids_for WHERE is_successful = true
+AND advertisement_email=input_email
+AND (extract(month from start_date) < extract(month from CURRENT_DATE)
+    AND extract(month from end_date) = extract(month from CURRENT_DATE))
+UNION ALL
+SELECT bid_price*(DATE_PART('days', 
+        DATE_TRUNC('month', CURRENT_DATE) 
+        + '1 MONTH'::INTERVAL 
+        - '1 DAY'::INTERVAL
+    )-extract(day from start_date)) AS transactionRevenue FROM bids_for WHERE is_successful = true
+AND advertisement_email=input_email
+AND (extract(month from end_date) > extract(month from CURRENT_DATE)
+    AND extract(month from start_date) = extract(month from CURRENT_DATE))) AS table1) END;
+    END; $$
+    LANGUAGE plpgsql;
+
+
+-- calculate ft_caretaker salary for the month
+CREATE OR REPLACE FUNCTION check_ft_salary(
+    type VARCHAR,
+    input_email VARCHAR)
+    RETURNS float8 AS $$
+    DECLARE totalDays float8;
+    DECLARE totalRevenue float8;
+        BEGIN SELECT (SUM(noOfDays)) INTO totalDays
+        FROM (SELECT (end_date-start_date) AS noOfDays, bid_price*(end_date-start_date) AS transactionRevenue FROM bids_for WHERE is_successful = true
+        AND advertisement_email=input_email
+        AND (extract(month from start_date) = extract(month from CURRENT_DATE)
+            AND extract(month from end_date) = extract(month from CURRENT_DATE))
+        UNION ALL
+        SELECT (extract(day from end_date)) AS noOfDays, bid_price*(extract(day from end_date)) AS transactionRevenue FROM bids_for WHERE is_successful = true
+        AND advertisement_email=input_email
+        AND (extract(month from start_date) < extract(month from CURRENT_DATE)
+            AND extract(month from end_date) = extract(month from CURRENT_DATE))
+        UNION ALL
+        SELECT (DATE_PART('days', 
+                DATE_TRUNC('month', CURRENT_DATE) 
+                + '1 MONTH'::INTERVAL 
+                - '1 DAY'::INTERVAL
+            )-extract(day from start_date)) AS noOfDays, bid_price*(DATE_PART('days', 
+                DATE_TRUNC('month', CURRENT_DATE) 
+                + '1 MONTH'::INTERVAL 
+                - '1 DAY'::INTERVAL
+            )-extract(day from start_date)) AS transactionRevenue FROM bids_for WHERE is_successful = true
+        AND advertisement_email=input_email
+        AND (extract(month from end_date) > extract(month from CURRENT_DATE)
+            AND extract(month from start_date) = extract(month from CURRENT_DATE))) AS table1;
+
+        SELECT (SUM(transactionRevenue)) INTO totalRevenue FROM (SELECT (end_date-start_date) AS noOfDays, bid_price*(end_date-start_date) AS transactionRevenue FROM bids_for WHERE is_successful = true
+        AND advertisement_email=input_email
+        AND (extract(month from start_date) = extract(month from CURRENT_DATE)
+            AND extract(month from end_date) = extract(month from CURRENT_DATE))
+        UNION ALL
+        SELECT (extract(day from end_date)) AS noOfDays, bid_price*(extract(day from end_date)) AS transactionRevenue FROM bids_for WHERE is_successful = true
+        AND advertisement_email=input_email
+        AND (extract(month from start_date) < extract(month from CURRENT_DATE)
+            AND extract(month from end_date) = extract(month from CURRENT_DATE))
+        UNION ALL
+        SELECT (DATE_PART('days', 
+                DATE_TRUNC('month', CURRENT_DATE) 
+                + '1 MONTH'::INTERVAL 
+                - '1 DAY'::INTERVAL
+            )-extract(day from start_date)) AS noOfDays, bid_price*(DATE_PART('days', 
+                DATE_TRUNC('month', CURRENT_DATE) 
+                + '1 MONTH'::INTERVAL 
+                - '1 DAY'::INTERVAL
+            )-extract(day from start_date)) AS transactionRevenue FROM bids_for WHERE is_successful = true
+        AND advertisement_email=input_email
+        AND (extract(month from end_date) > extract(month from CURRENT_DATE)
+            AND extract(month from start_date) = extract(month from CURRENT_DATE))) AS table1;
+
+        IF (type = 'ft_caretaker' OR type = 'ft_user') THEN IF totalDays <= 60 THEN RETURN 3000; END IF;
+        RETURN 3000 + 0.8*(totalDays-60)*(totalRevenue/totalDays); END IF;
+
+        IF totalDays <= 60 THEN RETURN totalRevenue-3000; END IF;
+        RETURN totalRevenue - (3000 + 0.8*(totalDays-60)*(totalRevenue/totalDays));
+        END;  $$
+        LANGUAGE PLPGSQL;
 

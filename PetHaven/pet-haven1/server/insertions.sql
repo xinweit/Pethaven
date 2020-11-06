@@ -75,8 +75,6 @@ INSERT INTO advertisements VALUES('dog', DATE('2020-04-11'), DATE('2020-04-12'),
 -- insertion into bids_for
 insert into owns_pets VALUES('auctor.velit.eget@metus.net', 'name', 'req', 'dog', 14);
 insert into owns_pets VALUES('adipiscing@duiCum.edu', 'name2', 'requests', 'dog',15);
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'facilisis.non.bibendum@Quisque.ca', 'auctor.velit.eget@metus.net', 'name');
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 12, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'facilisis.non.bibendum@Quisque.ca', 'adipiscing@duiCum.edu', 'name2');
 INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 8, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'massa.lobortis.ultrices@nectempus.com', 'adipiscing@duiCum.edu', 'name2');
 
 INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'massa.lobortis.ultrices@nectempus.com', 'auctor.velit.eget@metus.net', 'name');
