@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 export default function MenuAppBar({ setAuth, isAuthenticated }) {
 	const [name, setName] = useState("");
+	const [type, setType] = useState("");
 
 	async function getName() {
 		try {
@@ -18,6 +19,7 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 			const parseRes = await response.json();
 
 			setName(parseRes.name);
+			setType(parseRes.type);
 		} catch (error) {
 			console.error(error.message);
 		}
@@ -27,13 +29,15 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 		getName();
 	}, []);
 
+	console.log(type);
+
 	const logout = (e) => {
 		e.preventDefault();
 		try {
 			localStorage.removeItem("token");
 			setAuth(false);
 			window.location = "/";
-			toast.success("Logout successfully");
+			toast.success("Logout Successful");
 		} catch (error) {
 			console.error(error.message);
 		}
@@ -44,14 +48,11 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 			<Navbar.Brand href="/home">PetHaven</Navbar.Brand>
 			<Nav className="mr-auto">
 				<Nav.Link href="/home">Home</Nav.Link>
-				<Nav.Link href="/advertisements">Advertisements</Nav.Link>
-				<Nav.Link href="#pricing">Pricing</Nav.Link>
+				<Nav.Link href="/advertisements" hidden={type === "pet_owner" || type === "pcs_admin"}>Advertisements</Nav.Link>
 			</Nav>
 			<Nav bg="primary" className="justify-content-end">
 				<NavDropdown title={name} id="basic-nav-dropdown">
-					<NavDropdown.Item href="/user_profile">
-						Profile
-					</NavDropdown.Item>
+					<NavDropdown.Item href="/user_profile">Profile</NavDropdown.Item>
 					<NavDropdown.Item onClick={(e) => logout(e)}>
 						{/* <Button onClick={(e) => logout(e)}>Sign out</Button> */}
 						Logout
@@ -63,8 +64,9 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 	) : (
 		<Navbar bg="primary" variant="dark">
 			<Navbar.Brand href="/">PetHaven</Navbar.Brand>
-			<Nav className="mr-auto">
-				<Nav.Link href="/">Home</Nav.Link>
+			<Nav className="mr-auto" />
+			<Nav bg="primary" className="justify-content-end">
+				{/* <Nav.Link href="/">Home</Nav.Link> */}
 				<Nav.Link href="/signin">Sign In</Nav.Link>
 				<Nav.Link href="/signup">Sign Up</Nav.Link>
 			</Nav>

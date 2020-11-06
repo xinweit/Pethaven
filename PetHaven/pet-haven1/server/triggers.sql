@@ -5,7 +5,7 @@ CREATE OR REPLACE FUNCTION check_daily_price()
 RETURNS TRIGGER AS $$
 DECLARE correct_price INTEGER;
 BEGIN 
-  SELECT base_daily_price INTO correct_price FROM specifies s WHERE s.ft_email = NEW.email AND NEW.pet_category = s.pet_category; 
+  SELECT base_daily_price INTO correct_price FROM specifies s WHERE NEW.pet_category = s.pet_category; 
   if (NEW.daily_price < correct_price) THEN 
   RAISE EXCEPTION 'invalid daily price. Please enter price more than your base daily price';
   RETURN NULL;
@@ -92,85 +92,7 @@ END; $$
 LANGUAGE PLPGSQL;
 -- testing new updatePetDay
 
-/*Query to update petday upon sucessful bid*/
-CREATE OR REPLACE FUNCTION update_PetDay()
-RETURNS TRIGGER AS $$
-  DECLARE 
-    currentPetDay integer;
-    currentPay numeric;
-    isPart_time integer;
-  BEGIN
-    SELECT pet_day into currentPetDay FROM ft_caretakers
-    WHERE email = OLD.advertisement_email and 
-    NEW.is_successful = True;
 
-    SELECT COUNT(*) INTO isPart_time
-    FROM pt_caretakers
-    WHERE email = OLD.advertisement_email;
-    
-    SELECT payment_amount into currentPay FROM salaries
-    WHERE email = OLD.advertisement_email
-    -- month for payment 
-    and payment_date = OLD.end_date;
-    
-    UPDATE ft_caretakers SET pet_day = 
-    (currentPetDay + OLD.bid_end_date -
-                    OLD.bid_start_date)
-    WHERE email = OLD.advertisement_email;
-
-    if (isPart_time is not NULL) THEN        
-    UPDATE salaries SET 
-    payment_amount = currentPay + 
-    (SELECT (end_date - start_date)* bid_price *0.75 FROM  /*for part timer*/
-    bids_for WHERE is_successful = True 
-    and advertisement_email = OLD.advertisement_email
-    and pet_category = OLD.pet_category
-    and start_date = OLD.start_date
-    and end_date = OLD.end_date
-    and owner_email = OLD.owner_email
-    and pet_name = OLD.pet_name)
-    WHERE email = OLD.advertisement_email AND payment_date = NEW.end_date;
-
-    ELSE 
-    UPDATE salaries SET 
-    payment_amount = currentPay + 
-    (SELECT (end_date - start_date)* bid_price FROM  /*for full timer*/
-     bids_for WHERE is_successful = True 
-    and advertisement_email = OLD.advertisement_email
-    and pet_category = OLD.pet_category
-    and start_date = OLD.start_date
-    and end_date = OLD.end_date
-    and owner_email = OLD.owner_email
-    and pet_name = OLD.pet_name)
-    WHERE email = OLD.advertisement_email AND payment_date = NEW.end_date;
-    END IF;
-    RETURN NEW;
-END; $$
-LANGUAGE PLPGSQL;
-
---testing above
-CREATE TRIGGER update_ftcaretaker_petday
-AFTER UPDATE of is_successful
-ON bids_for
-FOR EACH ROW WHEN (OLD.rating_given = 0 and OLD.is_successful = FALSE)
-EXECUTE PROCEDURE update_PetDay();
-
---change the salary and petday to 0 at the end of the month
-CREATE OR REPLACE FUNCTION reset_salaryAndPetDay()
-RETURNS TRIGGER AS $$
-DECLARE min_bid_price NUMERIC;
-DECLARE num_successful INTEGER;
-BEGIN
-    UPDATE salaries
-    SET payment_amount = 0
-    WHERE payment_amount <> 0;
-    
-    UPDATE ft_caretakers
-    SET pet_day = 0 
-    WHERE pet_day <> 0; 
-    RETURN NEW;
-END; $$
-LANGUAGE PLPGSQL;
 
 
 --trigger to update salary by restting it to zero and reset the pet day for the pet month
@@ -178,7 +100,7 @@ CREATE TRIGGER reset_pet_day
 AFTER UPDATE of payment_amount
 On salaries 
 FOR EACH ROW 
-EXECUTE PROCEDURE reset_salaryAndPetDay();
+EXECUTE PROCEDURE update_PetDay();
 
 -- trigger to automatically accept bid upon successful price match
 CREATE OR REPLACE FUNCTION check_bidding_price()
@@ -217,6 +139,7 @@ ON bids_for
 FOR EACH ROW
 EXECUTE PROCEDURE check_bidding_price();
 
+
 -- Check whether new leave results in no 2x 150 consecutive days
 CREATE OR REPLACE FUNCTION check_leave()
 RETURNS TRIGGER AS $$
@@ -250,5 +173,37 @@ AFTER INSERT
 ON takes_leaves
 FOR EACH ROW
 EXECUTE PROCEDURE check_leave();
+
+-- create trigger to limit number of 
+CREATE OR REPLACE FUNCTION check_TotalPetDay()
+RETURNS TRIGGER AS $$
+DECLARE total_count INTEGER;
+DECLARE ct_rating NUMERIC;
+BEGIN
+SELECT rating INTO ct_rating FROM 
+pt_caretakers WHERE 
+email = NEW.advertisement_email;
+
+SELECT COUNT(*) into total_count FROM bids_for WHERE 
+is_successful = True and 
+advertisement_email = NEW.advertisement_email and 
+end_date > (SELECT CURRENT_DATE);
+if total_count = 5 or (total_count = 2 and ct_rating is not null and ct_rating < 7) THEN
+RAISE EXCEPTION 'The caretaker has hit the quota';
+END IF;
+RETURN NEW;
+END; $$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER check_PetLimits
+AFTER INSERT
+on bids_for
+FOR EACH row 
+EXECUTE PROCEDURE check_TotalPetDay();
+
+
+
+
+
 
 

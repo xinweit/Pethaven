@@ -27,6 +27,14 @@ app.use("/pets", require("./routes/pets"));
 
 //advertisements
 app.use("/advertisements", require("./routes/advertisements"));
+// caretakers
+app.use("/caretakers", require("./routes/caretakers"));
+
+// base daily price
+app.use("/basedailyprice", require("./routes/basedailyprice"));
+
+//bids
+app.use("/bids",  require("./routes/bids"));
 
 app.listen(port, () => {
 	console.log(`server is up and listening on port ${port}`);

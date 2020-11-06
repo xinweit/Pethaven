@@ -85,3 +85,29 @@ UPDATE bids_for SET is_successful = true where advertisement_email = 'facilisis.
 UPDATE bids_for SET rating_given = 6 where advertisement_email = 'facilisis.non.bibendum@Quisque.ca' AND  owner_email = 'auctor.velit.eget@metus.net';
 UPDATE bids_for SET is_successful = true where advertisement_email = 'facilisis.non.bibendum@Quisque.ca' AND owner_email = 'adipiscing@duiCum.edu';
 UPDATE bids_for SET rating_given = 6 where advertisement_email = 'massa.lobortis.ultrices@nectempus.com' AND  owner_email = 'adipiscing@duiCum.edu';
+
+
+
+INSERT INTO advertisements VALUES('dog', DATE('2020-04-11'), DATE('2020-04-12'), 10, 'eget@malesuadafringilla.ca');
+INSERT INTO advertisements VALUES('dog', DATE('2020-05-11'), DATE('2020-06-12'), 10, 'eget@malesuadafringilla.ca');
+INSERT INTO advertisements VALUES('dog', DATE('2020-07-11'), DATE('2020-08-12'), 10, 'eget@malesuadafringilla.ca');
+
+
+INSERT INTO advertisements VALUES('dog', DATE('2020-04-11'), DATE('2020-04-12'), 10, 'accumsan.sed@euismod.ca');
+INSERT INTO advertisements VALUES('dog', DATE('2020-05-11'), DATE('2020-06-12'), 10, 'accumsan.sed@euismod.ca');
+INSERT INTO advertisements VALUES('dog', DATE('2020-07-11'), DATE('2020-08-12'), 10, 'accumsan.sed@euismod.ca');
+
+
+INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'eget@malesuadafringilla.ca', 'auctor.velit.eget@metus.net', 'name');
+INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-05-11'), DATE('2020-06-12'), 'dog', 'eget@malesuadafringilla.ca', 'auctor.velit.eget@metus.net', 'name');
+INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-07-11'), DATE('2020-08-12'), 'dog', 'eget@malesuadafringilla.ca', 'auctor.velit.eget@metus.net', 'name');
+
+
+
+INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'accumsan.sed@euismod.ca', 'auctor.velit.eget@metus.net', 'name');
+INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-05-11'), DATE('2020-06-12'), 'dog', 'accumsan.sed@euismod.ca', 'auctor.velit.eget@metus.net', 'name');
+INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-07-11'), DATE('2020-08-12'), 'dog', 'accumsan.sed@euismod.ca', 'auctor.velit.eget@metus.net', 'name');
+
+insert into owns_pets VALUES('auctor.velit.eget@metus.net','name', NULL, 'dog',NULL);
+
+

@@ -1,9 +1,31 @@
 import React, { Fragment, useEffect, useState } from 'react';
 import {Button} from '@material-ui/core';
 import DeleteAdvertisements from "./DeleteAdvertisement";
+import Error from "./Error";
 
 
 export default function ShowAdvertisements() {
+    const [info, setInfo] = useState({
+		name: "",
+		email: "",
+		type: "",
+	});
+
+    const { name, email, type } = info;
+    async function getInfo() {
+		try {
+			const response = await fetch("http://localhost:5002/home/", {
+				method: "GET",
+				headers: { token: localStorage.token },
+			});
+
+			const parseRes = await response.json();
+			setInfo(parseRes);
+		} catch (error) {
+			console.error(error.message);
+		}
+    }
+    
     const [advertisements, setAdvertisements] = useState([]);
 	async function getAdvertisements() {
 		try {
@@ -21,8 +43,10 @@ export default function ShowAdvertisements() {
     }
     useEffect(()=>{
         getAdvertisements();
+        getInfo();
     },[]);
-    return(
+
+    return type === "ft_caretaker" || type === "pt_caretaker" || type === "ft_user" || type === "pt_user" ? (
         <Fragment>
          <div>
             <h2 className="text-left">Hi fulltime caretaker, this is a list of all your ads!</h2>
@@ -54,5 +78,5 @@ export default function ShowAdvertisements() {
                     )}
             </tbody>
         </table>
-    </Fragment>);
+    </Fragment>) : <Error />;
 }
