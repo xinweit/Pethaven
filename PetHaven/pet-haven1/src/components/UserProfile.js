@@ -36,7 +36,7 @@ export default function UserProfile() {
 	async function onSubmitForm(name) {
 		try {
 			const body = { name };
-			const response = await fetch("http://localhost:5002/profile/", {
+			const response = await fetch("http://localhost:5002profile/", {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",

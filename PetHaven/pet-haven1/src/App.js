@@ -15,7 +15,8 @@ import MenuAppBar from "./components/MenuAppBar";
 import Error from "./components/Error";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
-
+import Calendar from "./components/PostLeave";
+import ShowLeaves from "./components/ShowLeaves";
 toast.configure();
 
 function App() {
@@ -110,6 +111,30 @@ function App() {
 						render={(props) =>
 							isAuthenticated ? (
 								<UserProfile
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
+							) : null
+						}
+					/>
+					<Route
+						path="/leaves"
+						render={(props) =>
+							isAuthenticated ? (
+								<Calendar
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
+							) : null
+						}
+					/>
+					<Route
+						path="/showleaves"
+						render={(props) =>
+							isAuthenticated ? (
+								<ShowLeaves
 									{...props}
 									isAuthenticated={isAuthenticated}
 									setAuth={setAuth}

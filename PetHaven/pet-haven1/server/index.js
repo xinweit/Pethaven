@@ -25,6 +25,12 @@ app.use("/petowners", require("./routes/petowners"));
 // pets
 app.use("/pets", require("./routes/pets"));
 
+//leaves
+app.use("/leaves", require("./routes/leaves"));
+//Availability
+
+app.use("/availability", require("./routes/availability"));
+
 app.listen(port, () => {
 	console.log(`server is up and listening on port ${port}`);
 });
