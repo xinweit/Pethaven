@@ -30,6 +30,11 @@ app.use("/leaves", require("./routes/leaves"));
 //Availability
 
 app.use("/availability", require("./routes/availability"));
+// caretakers
+app.use("/caretakers", require("./routes/caretakers"));
+
+// base daily price
+app.use("/basedailyprice", require("./routes/basedailyprice"));
 
 app.listen(port, () => {
 	console.log(`server is up and listening on port ${port}`);

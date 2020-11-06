@@ -119,6 +119,31 @@ function App() {
 						}
 					/>
 					<Route
+						path="/create_pet"
+						render={(props) =>
+							isAuthenticated ? (
+								<CreatePet
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
+							) : null
+						}
+					/>
+
+					<Route
+						path="/create_basedailyprice"
+						render={(props) =>
+							isAuthenticated ? (
+								<CreateBaseDailyPrice
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
+							) : null
+						}
+					/>	
+					<Route
 						path="/leaves"
 						render={(props) =>
 							isAuthenticated ? (

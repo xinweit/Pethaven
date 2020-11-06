@@ -85,9 +85,9 @@ export default function SignUp({ setAuth }) {
 			if (parseRes.token) {
 				//localStorage.setItem("token", parseRes.token);
 				//setAuth(true);
+				//window.location = "/";
 				toast.success("Signed Up Successfully");
-				//return true;
-				window.location = "/";
+				return true;
 			} else {
 				setAuth(false);
 				toast.error(parseRes);
