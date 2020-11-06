@@ -75,8 +75,6 @@ INSERT INTO advertisements VALUES('dog', DATE('2020-04-11'), DATE('2020-04-12'),
 -- insertion into bids_for
 insert into owns_pets VALUES('auctor.velit.eget@metus.net', 'name', 'req', 'dog', 14);
 insert into owns_pets VALUES('adipiscing@duiCum.edu', 'name2', 'requests', 'dog',15);
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'facilisis.non.bibendum@Quisque.ca', 'auctor.velit.eget@metus.net', 'name');
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 12, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'facilisis.non.bibendum@Quisque.ca', 'adipiscing@duiCum.edu', 'name2');
 INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 8, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'massa.lobortis.ultrices@nectempus.com', 'adipiscing@duiCum.edu', 'name2');
 
 INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'massa.lobortis.ultrices@nectempus.com', 'auctor.velit.eget@metus.net', 'name');
@@ -85,3 +83,12 @@ UPDATE bids_for SET is_successful = true where advertisement_email = 'facilisis.
 UPDATE bids_for SET rating_given = 6 where advertisement_email = 'facilisis.non.bibendum@Quisque.ca' AND  owner_email = 'auctor.velit.eget@metus.net';
 UPDATE bids_for SET is_successful = true where advertisement_email = 'facilisis.non.bibendum@Quisque.ca' AND owner_email = 'adipiscing@duiCum.edu';
 UPDATE bids_for SET rating_given = 6 where advertisement_email = 'massa.lobortis.ultrices@nectempus.com' AND  owner_email = 'adipiscing@duiCum.edu';
+
+-- insertion into pcs admin
+INSERT INTO pcs_admins VALUES('Toh@gmail.com','toh', 'toh1');
+
+-- insertion into specifies table 
+insert into specifies VALUES('dog',10,'euismod@inhendreritconsectetuer.edu','Toh@gmail.com');
+
+-- insertion into available dates for part timers
+INSERT INTO specifies_available_days VALUES(DATE('2020-04-11'), DATE('2020-04-12'),'sodales.elit.erat@fermentum.com');

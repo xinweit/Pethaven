@@ -26,6 +26,11 @@ app.use("/petowners", require("./routes/petowners"));
 // pets
 app.use("/pets", require("./routes/pets"));
 
+//leaves
+app.use("/leaves", require("./routes/leaves"));
+//Availability
+
+app.use("/availability", require("./routes/availability"));
 // caretakers
 app.use("/caretakers", require("./routes/caretakers"));
 
