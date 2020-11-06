@@ -66,9 +66,8 @@ CREATE TABLE takes_leaves(
 CREATE TABLE specifies(
   pet_category VARCHAR(255),
   base_daily_price NUMERIC,
-  ft_email VARCHAR(255) REFERENCES ft_caretakers(email) ON DELETE CASCADE,
   pcs_email VARCHAR(255) REFERENCES pcs_admins(email) ON DELETE CASCADE,
-  PRIMARY KEY(ft_email, pcs_email)
+  PRIMARY KEY(pet_category)
 );
 CREATE TABLE bids_for(
   bid_start_date date,

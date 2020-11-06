@@ -25,6 +25,12 @@ app.use("/petowners", require("./routes/petowners"));
 // pets
 app.use("/pets", require("./routes/pets"));
 
+// caretakers
+app.use("/caretakers", require("./routes/caretakers"));
+
+// base daily price
+app.use("/basedailyprice", require("./routes/basedailyprice"));
+
 app.listen(port, () => {
 	console.log(`server is up and listening on port ${port}`);
 });

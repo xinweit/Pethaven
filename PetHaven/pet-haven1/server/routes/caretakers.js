@@ -6,7 +6,7 @@ router.get("/", authorization, async (req, res) => {
 	try {
 		//const user = await pool.query("SELECT getUser($1)", [req.user]);
 		var query =
-			"SELECT email, name FROM ft_caretakers UNION SELECT email, name FROM pt_caretakers";
+			"SELECT email, name, 'Full Time' AS type FROM ft_caretakers UNION SELECT email, name, 'Part Time' AS type FROM pt_caretakers";
 
 		const user = await pool.query(query);
 

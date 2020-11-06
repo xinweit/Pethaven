@@ -7,10 +7,10 @@ const Landing = () => {
 			<h1>Welcome to the Todo List App</h1>
 			<p>Sign In and start building your todo list</p>
 			<Link to="/signin" className="btn btn-primary">
-				Login
+				Sign In
 			</Link>
 			<Link to="/signup" className="btn btn-primary ml-3">
-				Register
+				Sign Up
 			</Link>
 		</div>
 	);

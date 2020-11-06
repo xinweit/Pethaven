@@ -33,7 +33,7 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 			localStorage.removeItem("token");
 			setAuth(false);
 			window.location = "/";
-			toast.success("Logout successfully");
+			toast.success("Logout Successful");
 		} catch (error) {
 			console.error(error.message);
 		}
@@ -45,13 +45,10 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 			<Nav className="mr-auto">
 				<Nav.Link href="/home">Home</Nav.Link>
 				<Nav.Link href="/profile">Advertisements</Nav.Link>
-				<Nav.Link href="#pricing">Pricing</Nav.Link>
 			</Nav>
 			<Nav bg="primary" className="justify-content-end">
 				<NavDropdown title={name} id="basic-nav-dropdown">
-					<NavDropdown.Item href="/user_profile">
-						Profile
-					</NavDropdown.Item>
+					<NavDropdown.Item href="/user_profile">Profile</NavDropdown.Item>
 					<NavDropdown.Item onClick={(e) => logout(e)}>
 						{/* <Button onClick={(e) => logout(e)}>Sign out</Button> */}
 						Logout
@@ -63,8 +60,9 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 	) : (
 		<Navbar bg="primary" variant="dark">
 			<Navbar.Brand href="/">PetHaven</Navbar.Brand>
-			<Nav className="mr-auto">
-				<Nav.Link href="/">Home</Nav.Link>
+			<Nav className="mr-auto" />
+			<Nav bg="primary" className="justify-content-end">
+				{/* <Nav.Link href="/">Home</Nav.Link> */}
 				<Nav.Link href="/signin">Sign In</Nav.Link>
 				<Nav.Link href="/signup">Sign Up</Nav.Link>
 			</Nav>

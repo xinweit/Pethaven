@@ -1,10 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import {
-	Route,
-	Switch,
-	BrowserRouter as Router,
-	Redirect,
-} from "react-router-dom";
+import { Route, Switch, BrowserRouter as Router, Redirect } from "react-router-dom";
 import "./App.css";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
@@ -16,6 +11,7 @@ import Error from "./components/Error";
 import CreatePet from "./components/Pet/CreatePet";
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
+import CreateBaseDailyPrice from "./components/HomeViews/CreateBaseDailyPrice";
 
 toast.configure();
 
@@ -37,9 +33,7 @@ function App() {
 
 			const parseRes = await result.json();
 
-			parseRes === true
-				? setIsAuthenticated(true)
-				: setIsAuthenticated(false);
+			parseRes === true ? setIsAuthenticated(true) : setIsAuthenticated(false);
 		} catch (error) {
 			console.error(error.message);
 		}
@@ -61,16 +55,14 @@ function App() {
 							!isAuthenticated ? (
 								<Landing {...props} setAuth={setAuth} />
 							) : (
-									<Redirect to="/home" />
-								)
+								<Redirect to="/home" />
+							)
 						}
 					/>
 					<Route
 						exact
 						path="/error"
-						render={(props) => (
-							<Error {...props} setAuth={setAuth} />
-						)}
+						render={(props) => <Error {...props} setAuth={setAuth} />}
 					/>
 					<Route
 						path="/signin"
@@ -78,8 +70,8 @@ function App() {
 							!isAuthenticated ? (
 								<SignIn {...props} setAuth={setAuth} />
 							) : (
-									<Redirect to="/home" />
-								)
+								<Redirect to="/home" />
+							)
 						}
 					/>
 					<Route
@@ -88,8 +80,8 @@ function App() {
 							!isAuthenticated ? (
 								<SignUp {...props} setAuth={setAuth} />
 							) : (
-									<Redirect to="/home" />
-								)
+								<Redirect to="/home" />
+							)
 						}
 					/>
 					<Route
@@ -102,8 +94,8 @@ function App() {
 									setAuth={setAuth}
 								/>
 							) : (
-									<Redirect to="/" />
-								)
+								<Redirect to="/" />
+							)
 						}
 					/>
 					<Route
@@ -123,6 +115,18 @@ function App() {
 						render={(props) =>
 							isAuthenticated ? (
 								<CreatePet
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
+							) : null
+						}
+					/>
+					<Route
+						path="/create_basedailyprice"
+						render={(props) =>
+							isAuthenticated ? (
+								<CreateBaseDailyPrice
 									{...props}
 									isAuthenticated={isAuthenticated}
 									setAuth={setAuth}

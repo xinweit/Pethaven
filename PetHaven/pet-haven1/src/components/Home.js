@@ -1,10 +1,16 @@
 import { React, Fragment, useState, useEffect } from "react";
-import Link from "@material-ui/core/Link";
+import PCSView from "./HomeViews/PCSView";
 
-export default function Home({ setAuth, isAuthenticated }) {
-	const [name, setName] = useState("");
+export default function Home() {
+	const [info, setInfo] = useState({
+		name: "",
+		email: "",
+		type: "",
+	});
 
-	async function getName() {
+	const { name, email, type } = info;
+
+	async function getInfo() {
 		try {
 			const response = await fetch("http://localhost:5002/home/", {
 				method: "GET",
@@ -12,21 +18,41 @@ export default function Home({ setAuth, isAuthenticated }) {
 			});
 
 			const parseRes = await response.json();
-
-			setName(parseRes.name);
+			setInfo(parseRes);
 		} catch (error) {
 			console.error(error.message);
 		}
 	}
 
 	useEffect(() => {
-		getName();
+		getInfo();
 	}, []);
 
-	return (
+	return type === "pet_owner" ? (
 		<Fragment>
-			<h1>Home</h1>
-			<Link href="/user_profile">Profile</Link>
+			<h1>Welcome, Pet Owner</h1>
+		</Fragment>
+	) : type === "ft_caretaker" ? (
+		<Fragment>
+			<h1>Welcome, Full Time Caretaker</h1>
+		</Fragment>
+	) : type === "pt_caretaker" ? (
+		<Fragment>
+			<h1>Welcome, Part Time Caretaker</h1>
+		</Fragment>
+	) : type === "ft_user" ? (
+		<Fragment>
+			<h1>Welcome, Full Time User</h1>
+		</Fragment>
+	) : type === "pt_user" ? (
+		<Fragment>
+			<h1>Welcome, Part Time User</h1>
+		</Fragment>
+	) : type === "pcs_admin" ? (
+		<PCSView />
+	) : (
+		<Fragment>
+			<h1>Loading...</h1>
 		</Fragment>
 	);
 }
