@@ -7,6 +7,7 @@ import {
 	TableBody,
 	TableCell,
 	Button,
+	Box,
 } from "@material-ui/core";
 import EditBaseDailyPrice from "./EditBaseDailyPrice";
 import DeleteBaseDailyPrice from "./DeleteBaseDailyPrice";
@@ -51,6 +52,7 @@ export default function PCSView() {
 	return (
 		<Fragment>
 			<h1>Welcome, PCS Admin</h1>
+			<Box height={30} />
 			<Container>
 				<h4>All Caretakers</h4>
 
@@ -60,6 +62,7 @@ export default function PCSView() {
 							<TableCell>Email</TableCell>
 							<TableCell>Name</TableCell>
 							<TableCell>Type</TableCell>
+							<TableCell>Salary($)</TableCell>
 						</TableRow>
 					</TableHead>
 					<TableBody>
@@ -69,21 +72,29 @@ export default function PCSView() {
 									<TableCell>{caretaker.email}</TableCell>
 									<TableCell>{caretaker.name}</TableCell>
 									<TableCell>{caretaker.type}</TableCell>
+									<TableCell>
+										{Math.round((caretaker.salary + Number.EPSILON) * 100) /
+											100}
+									</TableCell>
 								</TableRow>
 							);
 						})}
 					</TableBody>
 				</Table>
 			</Container>
+			<Box height={30} />
 			<Container>
-				<h4>Specified Daily Price</h4>
-				<Button
-					variant="contained"
-					color="primary"
-					onClick={(e) => (window.location = "/create_basedailyprice")}
-				>
-					Create
-				</Button>
+				<h4>
+					Daily Price Per Category
+					<Button
+						variant="contained"
+						color="primary"
+						onClick={(e) => (window.location = "/create_basedailyprice")}
+					>
+						Create
+					</Button>
+				</h4>
+
 				<Table id="table2">
 					<TableHead>
 						<TableRow>
