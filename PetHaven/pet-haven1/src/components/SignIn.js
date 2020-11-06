@@ -15,6 +15,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormControl from "@material-ui/core/FormControl";
+import { toast } from "react-toastify";
 
 function Copyright() {
 	return (
@@ -88,9 +89,14 @@ export default function SignIn({ setAuth }) {
 
 			const parseRes = await response.json();
 
-			localStorage.setItem("token", parseRes.token);
-
-			setAuth(true);
+			if (parseRes.token) {
+				localStorage.setItem("token", parseRes.token);
+				setAuth(true);
+				toast.success("Logged in Successfully");
+			} else {
+				setAuth(false);
+				toast.error(parseRes);
+			}
 		} catch (error) {
 			console.error(error.message);
 		}
@@ -130,6 +136,7 @@ export default function SignIn({ setAuth }) {
 								<option value={"ft_caretaker"}>Full Time Caretaker</option>
 								<option value={"pt_user"}>Part Time User</option>
 								<option value={"ft_user"}>Full Time User</option>
+								<option value={"pcs_admin"}>PCS Admin</option>
 							</Select>
 						</FormControl>
 						<TextField
