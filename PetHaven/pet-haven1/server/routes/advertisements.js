@@ -48,16 +48,11 @@ router.get("/", authorization, async (req, res) => {
 //delete pet info
 router.delete("/", authorization, async (req, res) => {
 	try {
-		const { advertisement_email, pet_category, start_date, end_date } = req.body;
+		const { email, pet_category, start_date, end_date } = req.body;
 		console.log(req.body);
 		var query =
 			"DELETE FROM advertisements WHERE pet_category = $1 AND start_date = $2 AND end_date = $3 AND email = $4";
-		const pew = await pool.query(query, [
-			pet_category,
-			start_date,
-			end_date,
-			advertisement_email,
-		]);
+		const pew = await pool.query(query, [pet_category, start_date, end_date, email]);
 		res.json(pew.rows);
 	} catch (error) {
 		console.error(error.message);
