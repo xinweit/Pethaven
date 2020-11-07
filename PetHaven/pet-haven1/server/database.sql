@@ -1,36 +1,36 @@
 CREATE DATABASE pethaven;
 CREATE TABLE pet_owners(
   email VARCHAR(255) PRIMARY KEY,
-  password VARCHAR (255),
-  name VARCHAR(255),
+  password VARCHAR (255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
   credit_card VARCHAR(255)
 );
 CREATE TABLE caretakers(email VARCHAR(255) PRIMARY KEY);
 CREATE TABLE pt_caretakers(
   email VARCHAR(255) PRIMARY KEY,
-  password VARCHAR (255),
-  name VARCHAR(255),
+  password VARCHAR (255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
   rating float8 DEFAULT 0,
   FOREIGN KEY(email) REFERENCES caretakers(email) ON DELETE CASCADE
 );
 CREATE TABLE ft_caretakers(
   email VARCHAR(255) PRIMARY KEY,
-  password VARCHAR (255),
-  name VARCHAR(255),
+  password VARCHAR (255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
   rating float8 DEFAULT 0,
   pet_day integer,
   FOREIGN KEY(email) REFERENCES caretakers(email) ON DELETE CASCADE
 );
 CREATE TABLE pcs_admins(
   email VARCHAR(255) PRIMARY KEY,
-  password VARCHAR (255),
-  name VARCHAR(255)
+  password VARCHAR (255) NOT NULL,
+  name VARCHAR(255) NOT NULL
 );
 CREATE TABLE owns_pets(
   email VARCHAR(255) REFERENCES pet_owners(email) ON DELETE CASCADE,
-  pet_name VARCHAR(50),
+  pet_name VARCHAR(50) NOT NULL,
   special_requirements VARCHAR(255),
-  pet_category VARCHAR(255),
+  pet_category VARCHAR(255) NOT NULL,
   pet_age integer,
   PRIMARY KEY(email, pet_name)
 );
@@ -38,7 +38,7 @@ CREATE TABLE advertisements(
   pet_category VARCHAR(255),
   start_date date,
   end_date date,
-  daily_price NUMERIC,
+  daily_price NUMERIC NOT NULL,
   email VARCHAR(255) REFERENCES caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(email, pet_category, start_date, end_date),
   CONSTRAINT "start date needs to be earlier than end date" CHECK (start_date < end_date)
@@ -52,7 +52,7 @@ CREATE TABLE specifies_available_days(
 );
 CREATE TABLE salaries(
   payment_date date,
-  payment_amount integer,
+  payment_amount integer NOT NULL,
   email VARCHAR(255) REFERENCES caretakers(email) ON DELETE CASCADE,
   PRIMARY KEY(payment_date, email)
 );
@@ -65,15 +65,15 @@ CREATE TABLE takes_leaves(
 );
 CREATE TABLE specifies(
   pet_category VARCHAR(255),
-  base_daily_price NUMERIC,
-  pcs_email VARCHAR(255) REFERENCES pcs_admins(email) ON DELETE CASCADE,
+  base_daily_price NUMERIC NOT NULL,
+  pcs_email VARCHAR(255) REFERENCES pcs_admins(email) NOT NULL,
   PRIMARY KEY(pet_category)
 );
+
 CREATE TABLE bids_for(
-  transfer_method VARCHAR(255),
-  bid_price NUMERIC,
-  timestamp time,
-  payment_method VARCHAR(255),
+  transfer_method VARCHAR(255) NOT NULL,
+  bid_price NUMERIC NOT NULL,
+  payment_method VARCHAR(255) NOT NULL,
   rating_given NUMERIC DEFAULT 0,
   is_successful BOOLEAN DEFAULT FALSE,
   feedback VARCHAR(255),
@@ -90,20 +90,8 @@ CREATE TABLE bids_for(
     advertisement_email
   ) REFERENCES advertisements(start_date, end_date, pet_category, email) ON DELETE CASCADE,
   FOREIGN KEY(owner_email, pet_name) REFERENCES owns_pets(email, pet_name) ON DELETE CASCADE ON UPDATE CASCADE,
-  PRIMARY KEY(
-    advertisement_email,
-    pet_category,
-    start_date,
-    end_date,
-    owner_email,
-    pet_name
-  ),
-  CONSTRAINT "range for rating given must be valid" CHECK (
-    (
-      rating_given >= 0
-      AND rating_given <= 10
-    )
-  )
+  PRIMARY KEY(advertisement_email,pet_category,start_date,end_date,owner_email,pet_name),
+  CONSTRAINT "range for rating given must be valid" CHECK ((rating_given >= 0AND rating_given <= 10))
 );
 
 CREATE OR REPLACE FUNCTION check_email_signup(
