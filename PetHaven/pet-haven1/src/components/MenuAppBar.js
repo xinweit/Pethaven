@@ -70,7 +70,7 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 			<Nav className="mr-auto" />
 			<Nav bg="primary" className="justify-content-end">
 				{/* <Nav.Link href="/">Home</Nav.Link> */}
-				<Nav.Link href="/signin">Sign In</Nav.Link>
+				<Nav.Link href="/">Sign In</Nav.Link>
 				<Nav.Link href="/signup">Sign Up</Nav.Link>
 			</Nav>
 		</Navbar>
