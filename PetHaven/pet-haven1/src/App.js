@@ -19,7 +19,8 @@ import "react-toastify/dist/ReactToastify.css";
 import MakeAdvertisement from "./components/MakeAdvertisement";
 import ShowAdvertisements from "./components/ShowAdvertisements";
 import CreateBaseDailyPrice from "./components/HomeViews/CreateBaseDailyPrice";
-import CreatePet from "./components/Pet/CreatePet"
+import CreatePet from "./components/Pet/CreatePet";
+import MakeBid from "./components/MakeBid";
 
 import Calendar from "./components/PostLeave";
 import ShowLeaves from "./components/ShowLeaves";
@@ -197,6 +198,18 @@ function App() {
 							) : null
 						}
 					/>
+					{/* <Route
+						path="/makebid"
+						render={(props) =>
+							isAuthenticated ? (
+								<MakeBid
+									{...props}
+									isAuthenticated={isAuthenticated}
+									setAuth={setAuth}
+								/>
+							) : null
+						}
+					/> */}
 					<Redirect from="*" to="/error" />
 				</Switch>
 			</Router>

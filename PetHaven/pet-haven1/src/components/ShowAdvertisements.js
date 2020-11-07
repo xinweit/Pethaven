@@ -9,6 +9,7 @@ import {
 	TableCell,
 } from "@material-ui/core";
 import DeleteAdvertisements from "./DeleteAdvertisement";
+import MakeBid from "./MakeBid";
 
 export default function ShowAdvertisements() {
 	const [info, setInfo] = useState({
@@ -75,11 +76,12 @@ export default function ShowAdvertisements() {
 							<TableCell>Starting Date</TableCell>
 							<TableCell>Ending Date</TableCell>
 							<TableCell>Daily Price</TableCell>
+							{type == "pet_owner" ? <TableCell>Make Bid</TableCell> : null}
 							{type === "pet_owner" ? null : <TableCell>Delete Ad</TableCell>}
 						</TableRow>
 					</TableHead>
 					<TableBody>
-						{advertisements.map((data) => (
+						{advertisements.map((data, index) => (
 							<TableRow key={(data.pet_category, data.start_date, data.end_date)}>
 								{type === "pcs_admin" || type === "pet_owner" ? (
 									<TableCell>{data.email}</TableCell>
@@ -102,6 +104,7 @@ export default function ShowAdvertisements() {
 								<TableCell>{data.daily_price}</TableCell>
 								<TableCell>
 									<DeleteAdvertisements hidden={type === "pet_owner"} ad={data} />
+                                    <MakeBid hidden={type !== "pet_owner"} advert={data} index={index}/>
 								</TableCell>
 							</TableRow>
 						))}
