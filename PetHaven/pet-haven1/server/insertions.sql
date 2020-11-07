@@ -69,43 +69,5 @@ SELECT add_pt_caretaker('Malik','sapien@Aliquam.com','UFA55IEE5KF');
 SELECT add_pt_caretaker('Mark','sodales.elit.erat@fermentum.com','AIN73TOS7GZ');
 
 
--- inssertion into advertisement
-INSERT INTO advertisements VALUES('dog', DATE('2020-04-11'), DATE('2020-04-12'), 10, 'facilisis.non.bibendum@Quisque.ca');
-
--- insertion into bids_for
-insert into owns_pets VALUES('auctor.velit.eget@metus.net', 'name', 'req', 'dog', 14);
-insert into owns_pets VALUES('adipiscing@duiCum.edu', 'name2', 'requests', 'dog',15);
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 8, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'massa.lobortis.ultrices@nectempus.com', 'adipiscing@duiCum.edu', 'name2');
-
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'massa.lobortis.ultrices@nectempus.com', 'auctor.velit.eget@metus.net', 'name');
---updating of rating and pet-day
-UPDATE bids_for SET is_successful = true where advertisement_email = 'facilisis.non.bibendum@Quisque.ca' AND owner_email = 'auctor.velit.eget@metus.net';
-UPDATE bids_for SET rating_given = 6 where advertisement_email = 'facilisis.non.bibendum@Quisque.ca' AND  owner_email = 'auctor.velit.eget@metus.net';
-UPDATE bids_for SET is_successful = true where advertisement_email = 'facilisis.non.bibendum@Quisque.ca' AND owner_email = 'adipiscing@duiCum.edu';
-UPDATE bids_for SET rating_given = 6 where advertisement_email = 'massa.lobortis.ultrices@nectempus.com' AND  owner_email = 'adipiscing@duiCum.edu';
-
-
-
-INSERT INTO advertisements VALUES('dog', DATE('2020-04-11'), DATE('2020-04-12'), 10, 'eget@malesuadafringilla.ca');
-INSERT INTO advertisements VALUES('dog', DATE('2020-05-11'), DATE('2020-06-12'), 10, 'eget@malesuadafringilla.ca');
-INSERT INTO advertisements VALUES('dog', DATE('2020-07-11'), DATE('2020-08-12'), 10, 'eget@malesuadafringilla.ca');
-
-
-INSERT INTO advertisements VALUES('dog', DATE('2020-04-11'), DATE('2020-04-12'), 10, 'accumsan.sed@euismod.ca');
-INSERT INTO advertisements VALUES('dog', DATE('2020-05-11'), DATE('2020-06-12'), 10, 'accumsan.sed@euismod.ca');
-INSERT INTO advertisements VALUES('dog', DATE('2020-07-11'), DATE('2020-08-12'), 10, 'accumsan.sed@euismod.ca');
-
-
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'eget@malesuadafringilla.ca', 'auctor.velit.eget@metus.net', 'name');
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-05-11'), DATE('2020-06-12'), 'dog', 'eget@malesuadafringilla.ca', 'auctor.velit.eget@metus.net', 'name');
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-07-11'), DATE('2020-08-12'), 'dog', 'eget@malesuadafringilla.ca', 'auctor.velit.eget@metus.net', 'name');
-
-
-
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-04-11'), DATE('2020-04-12'), 'dog', 'accumsan.sed@euismod.ca', 'auctor.velit.eget@metus.net', 'name');
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-05-11'), DATE('2020-06-12'), 'dog', 'accumsan.sed@euismod.ca', 'auctor.velit.eget@metus.net', 'name');
-INSERT INTO bids_for VALUES(DATE('2020-04-11'), DATE('2020-04-12'), 'xfer', 11, timestamp '2001-09-28' +  interval '23 hours', 'cash', 0, false, 'feedback', DATE('2020-07-11'), DATE('2020-08-12'), 'dog', 'accumsan.sed@euismod.ca', 'auctor.velit.eget@metus.net', 'name');
-
-insert into owns_pets VALUES('auctor.velit.eget@metus.net','name', NULL, 'dog',NULL);
 
 

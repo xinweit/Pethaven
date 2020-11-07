@@ -29,8 +29,6 @@ export default function MenuAppBar({ setAuth, isAuthenticated }) {
 		getName();
 	}, []);
 
-	console.log(type);
-
 	const logout = (e) => {
 		e.preventDefault();
 		try {

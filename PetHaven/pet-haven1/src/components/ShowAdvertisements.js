@@ -82,7 +82,7 @@ export default function ShowAdvertisements() {
 					</TableHead>
 					<TableBody>
 						{advertisements.map((data, index) => (
-							<TableRow key={(data.pet_category, data.start_date, data.end_date)}>
+							<TableRow key={index}>
 								{type === "pcs_admin" || type === "pet_owner" ? (
 									<TableCell>{data.email}</TableCell>
 								) : null}
@@ -104,7 +104,11 @@ export default function ShowAdvertisements() {
 								<TableCell>{data.daily_price}</TableCell>
 								<TableCell>
 									<DeleteAdvertisements hidden={type === "pet_owner"} ad={data} />
-                                    <MakeBid hidden={type !== "pet_owner"} advert={data} index={index}/>
+									<MakeBid
+										hidden={type !== "pet_owner"}
+										advert={data}
+										index={index}
+									/>
 								</TableCell>
 							</TableRow>
 						))}
