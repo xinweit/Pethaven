@@ -39,3 +39,6 @@ Use it to find a haven for your pet now!
 `<directory of your choice>/CS2102_2021_S1_Team23/PetHaven/pet-haven1/server/`
 
 Pethaven link: https://pethaven.herokuapp.com/
+
+
+3)Link for the video: https://drive.google.com/file/d/1ZeGLfZ71VlL-ODGtrsmM5PwzSFDtyQFB/view?usp=sharing
