@@ -45,10 +45,10 @@ router.get("/", authorization, async (req, res) => {
 	}
 });
 
-//delete pet info
+//delete advertisement
 router.delete("/", authorization, async (req, res) => {
 	try {
-		const { email, pet_category, start_date, end_date } = req.body;
+		const { pet_category, start_date, end_date, email } = req.body;
 		console.log(req.body);
 		var query =
 			"DELETE FROM advertisements WHERE pet_category = $1 AND start_date = $2 AND end_date = $3 AND email = $4";

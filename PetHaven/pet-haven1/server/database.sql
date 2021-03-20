@@ -71,15 +71,9 @@ CREATE TABLE specifies(
 );
 
 CREATE TABLE bids_for(
-<<<<<<< HEAD
-  transfer_method VARCHAR(255),
-  bid_price NUMERIC,
-  payment_method VARCHAR(255),
-=======
   transfer_method VARCHAR(255) NOT NULL,
   bid_price NUMERIC NOT NULL,
   payment_method VARCHAR(255) NOT NULL,
->>>>>>> 57bbaeab642899b5fa287b6450976a18cd1c8954
   rating_given NUMERIC DEFAULT 0,
   is_successful BOOLEAN DEFAULT FALSE,
   feedback VARCHAR(255),
